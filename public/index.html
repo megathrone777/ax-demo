@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base href="/">
+    <meta charset="utf-8">
+    <meta
+      content="initial-scale=1.0, interactive-widget=resizes-content, viewport-fit=cover, width=device-width"
+      name="viewport"
+    >
+    <title>AX Vanilla</title>
+    <link href="favicon.ico" rel="shortcut icon">
+    <style>
+      @keyframes spin {
+        from {
+          transform: translateY(-50%) rotate(0deg);
+        }
+
+        to {
+          transform: translateY(-50%) rotate(360deg);
+        }
+      }
+
+      @font-face {
+        font-display: block;
+        font-family: "JetBrainsMono";
+        font-weight: 400;
+        src: url("fonts/JetBrainsMono-Regular.ttf");
+      }
+
+      @font-face {
+        font-display: block;
+        font-family: "JetBrainsMono";
+        font-weight: 700;
+        src: url("fonts/JetBrainsMono-Bold.ttf");
+      }
+
+      @font-face {
+        font-display: block;
+        font-family: "JetBrainsMono";
+        font-weight: 800;
+        src: url("fonts/JetBrainsMono-ExtraBold.ttf");
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html, body, #root {
+        height: 100%;
+        width: 100%;
+      }
+
+      body {
+        background-color: #090a0c;
+        color: #a9aaae;
+        font: 16px "JetBrainsMono", sans-serif;
+      }
+
+      .root-spinner {
+        animation: spin 0.5s linear infinite;
+        border-radius: 50%;
+        border: 10px solid #ff9b1b;
+        box-sizing: border-box;
+        border-top-color: transparent;
+        height: 60px;
+        left: 0;
+        margin-inline: auto;
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 60px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <noscript>
+      This page requires JavaScript. Please activate it in your browser settings.
+    </noscript>
+
+    <div id="root">
+      <div class="root-spinner"></div>
+    </div>
+  </body>
+</html>

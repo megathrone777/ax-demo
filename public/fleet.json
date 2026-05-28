@@ -1,0 +1,26 @@
+[
+  {
+    "active": true,
+    "data": {
+      "control_mode": -1,
+      "gear_status": -1,
+      "id": 1,
+      "ip_addr": "192.168.0.165",
+      "position": { "lat": 50.808406829833984, "lon": 14.882061004638672 },
+      "vehicle_status": { "speed": 0.0, "steer": -0.0 }
+    },
+    "id": 1
+  },
+  {
+    "active": false,
+    "data": {
+      "control_mode": -1,
+      "gear_status": -1,
+      "id": 2,
+      "ip_addr": "192.168.0.235",
+      "position": { "lat": 50.808406829833984, "lon": 14.882061004638672 },
+      "vehicle_status": { "speed": 0.0, "steer": -0.0 }
+    },
+    "id": 2
+  }
+]

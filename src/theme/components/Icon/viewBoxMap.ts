@@ -1,0 +1,15 @@
+export const viewBoxMap: Record<TIconID, string> = {
+  angles: "0 0 512 512",
+  car: "0 0 18 18",
+  close: "0 0 384 512",
+  drag: "0 0 448 512",
+  edit: "0 0 512 512",
+  minus: "0 0 24 24",
+  pause: "0 0 320 512",
+  reply: "0 0 576 512",
+  satellite: "0 0 512 512",
+  save: "0 0 448 512",
+  target: "0 0 512 512",
+  trash: "0 0 448 512",
+  upload: "0 0 384 512",
+};

@@ -1,0 +1,8 @@
+{
+  "glyphs": "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
+  "layers": [],
+  "name": "AX Map tiles",
+  "sources": {},
+  "sprite": "https://demotiles.maplibre.org/styles/osm-bright-gl-style/sprite",
+  "version": 8
+}
