@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
-import { useDestinations, useStore } from "@/hooks";
-import { addDestination } from "@/store";
+import { useAppContext, useDestination } from "@/hooks";
 import { Button, Input } from "@/ui";
 
 import { UploadWaypoints } from "./UploadWaypoints";
@@ -10,10 +9,10 @@ import { UploadWaypoints } from "./UploadWaypoints";
 import { formClass, layoutClass, infoClass } from "./Create.css";
 
 const Create: React.FC = () => {
-  const { name, positions } = useDestinations();
+  const { actions } = useAppContext();
+  const { name, positions } = useDestination();
   const { id } = useParams();
   const [missionName, setMissionName] = useState<string>("");
-  const { dispatch } = useStore();
 
   const handleInputChange = ({ currentTarget }: React.SyntheticEvent<HTMLInputElement>): void => {
     setMissionName(currentTarget.value);
@@ -21,19 +20,14 @@ const Create: React.FC = () => {
 
   const handleSubmit = (event: React.SyntheticEvent<HTMLFormElement>): void => {
     event.preventDefault();
+    if (missionName.length === 0) return;
 
-    if (missionName.length === 0) {
-      return;
-    }
-
-    dispatch(
-      addDestination({
-        id: +id!,
-        name: missionName,
-        positions: [],
-        waypoints: [],
-      }),
-    );
+    actions.addDestination({
+      id: +id!,
+      name: missionName,
+      positions: [],
+      waypoints: [],
+    });
   };
 
   useEffect((): void => {

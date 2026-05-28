@@ -1,12 +1,9 @@
 import { useContext, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
-import type { TBoundary } from "@/store";
-import { AppContext } from "@/store";
+import { AppContext } from "@/context";
 
-import type { TUseBoundaries } from "./types";
-
-const useBoundaries: TUseBoundaries = () => {
+const useBoundary = (): TBoundary => {
   const {
     store: { boundaries },
   } = useContext(AppContext);
@@ -31,4 +28,4 @@ const useBoundaries: TUseBoundaries = () => {
   }, [id, boundaries]);
 };
 
-export { useBoundaries };
+export { useBoundary };

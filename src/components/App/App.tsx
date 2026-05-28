@@ -1,9 +1,10 @@
 import React from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router";
 import { MapProvider } from "@vis.gl/react-maplibre";
 
 import { getVehicles, getVehicleDetails, loginAction } from "@/api";
 import { Error, Layout } from "@/components";
+import { AppProvider } from "@/context";
 import {
   AlertsPage,
   CamPage,
@@ -13,12 +14,16 @@ import {
   RegistrationPage,
   VehiclePage,
 } from "@/pages";
-import { AppProvider } from "@/store";
 
 const App: React.FC = () => {
   const router = createBrowserRouter([
     {
       children: [
+        {
+          Component: FleetPage,
+          index: true,
+          loader: getVehicles,
+        },
         {
           Component: MapPage,
           path: "map/:id?",
@@ -28,11 +33,7 @@ const App: React.FC = () => {
           loader: getVehicles,
           path: "alerts",
         },
-        {
-          Component: FleetPage,
-          index: true,
-          loader: getVehicles,
-        },
+
         {
           Component: FleetPage,
           loader: getVehicles,

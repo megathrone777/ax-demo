@@ -1,5 +1,4 @@
-import { cssVariant } from "@/theme";
-import { css } from "@/theme";
+import { css, cssVariant } from "@/theme";
 
 export const wrapperClass = css(({ colors, devices }) => ({
   alignItems: "center",
@@ -50,6 +49,7 @@ export const statusClass = cssVariant(
           paddingInline: 5,
           top: 10,
         },
+
         [devices.mobile]: {
           fontSize: 13,
           height: 26,
@@ -82,6 +82,7 @@ export const statusClass = cssVariant(
           paddingInline: 5,
           top: 10,
         },
+
         [devices.mobile]: {
           fontSize: 13,
           height: 26,

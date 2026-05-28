@@ -1,11 +1,9 @@
 import { useMap } from "@vis.gl/react-maplibre";
 
-import type { TUseMapImage } from "./types";
+const useMapImage = (mapId: TMapId) => {
+  const { [mapId]: map } = useMap();
 
-const useMapImage: TUseMapImage = (mapID) => {
-  const { [mapID]: map } = useMap();
-
-  return (url: string, name: string) => {
+  return (url: string, name: string): void => {
     if (map) {
       map.loadImage(url).then(({ data: image }) => {
         if (!map.hasImage(name)) map.addImage(name, image, { sdf: false });

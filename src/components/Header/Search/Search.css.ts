@@ -1,3 +1,5 @@
+import { calc } from "@vanilla-extract/css-utils";
+
 import { css } from "@/theme";
 
 export const wrapperClass = css(({ devices }) => ({
@@ -27,7 +29,7 @@ export const listClass = css(({ colors, devices }) => ({
   maxWidth: 300,
   position: "absolute",
   right: 10,
-  top: "calc(100% + 8px)",
+  top: `${calc("100%").add("8px")}`,
   zIndex: 1000,
 
   "@media": {

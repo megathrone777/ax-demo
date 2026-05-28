@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 
-import type { TCallbackFn } from "./types";
+type TCallbackFn<TArgs extends unknown[]> = (...args: TArgs) => Promise<void> | void;
 
 const useDebouncedCallback = <TArgs extends unknown[]>(
   callback: TCallbackFn<TArgs>,

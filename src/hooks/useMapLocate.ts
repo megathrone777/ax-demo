@@ -1,12 +1,12 @@
 import { useMap } from "@vis.gl/react-maplibre";
 import { LngLat } from "maplibre-gl";
 
-import type { TUseMapLocate } from "./types";
+import type { Position } from "geojson";
 
-const useMapLocate: TUseMapLocate = (mapID) => {
-  const { [mapID]: map } = useMap();
+const useMapLocate = (mapId: TMapId) => {
+  const { [mapId]: map } = useMap();
 
-  return ([longitude, latitude], zoom) => {
+  return ([longitude, latitude]: Position, zoom?: number): void => {
     const defaults = {
       center: new LngLat(longitude!, latitude!),
       duration: 200,

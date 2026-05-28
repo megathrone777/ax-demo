@@ -1,9 +1,9 @@
-export { useBoundaries } from "./useBoundaries";
+export { useAppContext } from "./useAppContext";
+export { useBoundary } from "./useBoundary";
 export { useDebouncedCallback } from "./useDebouncedCallback";
-export { useDestinations } from "./useDestinations";
+export { useDestination } from "./useDestination";
 export { useMapFit } from "./useMapFit";
 export { useMapImage } from "./useMapImage";
 export { useMapLocate } from "./useMapLocate";
 export { useResize } from "./useResize";
-export { useStore } from "./useStore";
 export { useTheme } from "./useTheme";

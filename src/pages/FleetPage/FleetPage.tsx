@@ -1,12 +1,12 @@
 import React from "react";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData } from "react-router";
 
 import { Item } from "./Item";
 
 import { wrapperClass, listClass } from "./FleetPage.css";
 
 const FleetPage: React.FC = () => {
-  const { vehicles } = useLoaderData<{ vehicles: TVehicle[] }>();
+  const vehicles = useLoaderData<TVehicle[]>();
 
   return (
     <div className={wrapperClass}>

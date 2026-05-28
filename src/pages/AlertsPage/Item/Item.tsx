@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useLoaderData, useLinkClickHandler } from "react-router-dom";
+import { useLoaderData, useLinkClickHandler } from "react-router";
 import bbox from "@turf/bbox";
 import { lineString } from "@turf/helpers";
 import { randomPosition } from "@turf/random";
 
-import { useStore } from "@/hooks";
-import { addPerson } from "@/store";
+import { useAppContext } from "@/hooks";
 import { Icon } from "@/ui";
 
 import {
@@ -22,23 +21,20 @@ import type { BBox } from "geojson";
 import type { TProps } from "./Item.types";
 
 const Item: React.FC<TProps> = ({ description, time, type }) => {
-  const { vehicles } = useLoaderData<{ vehicles: TVehicle[] }>();
+  const { actions } = useAppContext();
+  const vehicles = useLoaderData<TVehicle[]>();
   const [currentBounds, setCurrentBounds] = useState<BBox>([0, 0, 0, 0]);
-  const { dispatch } = useStore();
-  const handleClick = useLinkClickHandler("/map/1");
+
+  const clickHandler = useLinkClickHandler("/map/1");
 
   const handleRouteClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void => {
-    handleClick(event);
-    dispatch(addPerson(randomPosition(currentBounds)));
+    clickHandler(event);
+    actions.addPerson(randomPosition(currentBounds));
   };
 
   useEffect((): void => {
     const coordinates: number[][] = vehicles.map(
-      ({
-        data: {
-          position: { lat, lon },
-        },
-      }): [number, number] => [lon, lat],
+      ({ position: { lat, lon } }): [number, number] => [lon, lat],
     );
     const bounds: BBox = bbox(lineString(coordinates));
 

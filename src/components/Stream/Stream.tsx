@@ -1,10 +1,10 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
-import { Icon } from "@/ui";
+import { Icon, Spinner } from "@/ui";
 
 import { videoClass, controlsClass, errorClass, pauseClass } from "./Stream.css";
 
-import type { TConfig, TProps } from "./types";
+import type { TConfig, TProps } from "./Stream.types";
 
 const config: TConfig = {
   sdpSemantics: "unified-plan",
@@ -12,9 +12,9 @@ const config: TConfig = {
 
 const connection = new RTCPeerConnection(config);
 
-const Stream: React.FC<TProps> = ({ showControls }) => {
-  // const [isLoading, toggleLoading] = useState<boolean>(true);
-  // const [isError, toggleError] = useState<boolean>(false);
+const Stream: React.FC<TProps> = ({ direction, showControls }) => {
+  const [isLoading, toggleLoading] = useState<boolean>(true);
+  const [isError, toggleError] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const handleStreamStop = (): void => {
@@ -25,72 +25,75 @@ const Stream: React.FC<TProps> = ({ showControls }) => {
     }
   };
 
-  // useEffect((): VoidFunction => {
-  //   (async (): Promise<void> => {
-  //     connection.addTransceiver("video", { direction: "recvonly" });
+  useEffect((): VoidFunction => {
+    (async (): Promise<void> => {
+      connection.addTransceiver("video", { direction: "recvonly" });
 
-  //     try {
-  //       const offer = await connection.createOffer();
+      try {
+        const offer = await connection.createOffer();
 
-  //       await connection.setLocalDescription(offer);
-  //       await new Promise<void>((resolve): void => {
-  //         const checkState = (): void => {
-  //           resolve();
-  //         };
+        await connection.setLocalDescription(offer);
+        await new Promise<void>((resolve): void => {
+          const checkState = (): void => {
+            resolve();
+          };
 
-  //         if (connection.iceGatheringState === "complete") {
-  //           connection.removeEventListener("icegatheringstatechange", checkState);
+          if (connection.iceGatheringState === "complete") {
+            connection.removeEventListener("icegatheringstatechange", checkState);
 
-  //           return;
-  //         }
+            return;
+          }
 
-  //         connection.addEventListener("icegatheringstatechange", checkState);
-  //       });
-  //       const { sdp, type }: RTCSessionDescription = connection.localDescription!;
+          connection.addEventListener("icegatheringstatechange", checkState);
+        });
+        const { sdp, type }: RTCSessionDescription = connection.localDescription!;
 
-  //       const response = await fetch(
-  //         `http://${import.meta.env.APP_STREAM_IP}/stream/${direction}`,
-  //         {
-  //           body: JSON.stringify({
-  //             sdp,
-  //             type,
-  //           }),
-  //           method: "POST",
-  //         },
-  //       );
+        const response = await fetch(
+          `${location.protocol}//${import.meta.env.APP_STREAM_IP}/stream/${direction}`,
+          {
+            body: JSON.stringify({
+              sdp,
+              type,
+            }),
+            method: "POST",
+          },
+        );
 
-  //       if (response.ok) {
-  //         const answer = await response.json();
+        if (response.ok) {
+          const answer = await response.json();
 
-  //         return connection.setRemoteDescription(answer);
-  //       }
-  //     } catch {
-  //       toggleError(true);
-  //     } finally {
-  //       toggleLoading(false);
-  //     }
-  //   })();
+          return connection.setRemoteDescription(answer);
+        }
+      } catch {
+        toggleError(true);
+      } finally {
+        toggleLoading(false);
+      }
+    })();
 
-  //   toggleLoading(true);
-  //   connection.addEventListener("track", ({ streams, track }: RTCTrackEvent): void => {
-  //     if (videoRef.current && track.kind === "video") {
-  //       videoRef.current.srcObject = streams[0];
+    toggleLoading(true);
+    connection.addEventListener("track", ({ streams, track }: RTCTrackEvent): void => {
+      if (videoRef.current && track.kind === "video") {
+        videoRef.current.srcObject = streams[0];
 
-  //       toggleLoading(false);
+        toggleLoading(false);
 
-  //       return;
-  //     }
-  //   });
+        return;
+      }
+    });
 
-  //   return (): void => {
-  //     connection.close();
-  //   };
-  // }, [direction]);
+    return (): void => {
+      connection.close();
+    };
+  }, [direction]);
 
   return (
     <>
-      {/* {isLoading && <Spinner template="small" />} */}
-      <p className={errorClass}>No connection.</p>
+      {isLoading ? (
+        <Spinner template="small" />
+      ) : (
+        <>{isError && <p className={errorClass}>No connection.</p>}</>
+      )}
 
       <video
         autoPlay
@@ -99,7 +102,7 @@ const Stream: React.FC<TProps> = ({ showControls }) => {
         ref={videoRef}
       />
 
-      {showControls && (
+      {showControls && !isLoading && !isError && (
         <div className={controlsClass}>
           <button
             className={pauseClass}

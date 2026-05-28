@@ -1,6 +1,6 @@
-import type { TStore } from "./types";
+import type { TAppStore } from "./App.types";
 
-const initialStore: TStore = {
+const AppStore: TAppStore = {
   area: [],
   boundaries: [],
   currentIP: import.meta.env.APP_ROS_IP,
@@ -8,4 +8,4 @@ const initialStore: TStore = {
   persons: [],
 };
 
-export { initialStore };
+export { AppStore };

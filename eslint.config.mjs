@@ -1,8 +1,9 @@
+import eslintConfigPrettier from "eslint-config-prettier";
+import eslintPluginStylistic from "@stylistic/eslint-plugin";
 import eslintPluginImport from "eslint-plugin-import";
 import eslintPluginPerfectionist from "eslint-plugin-perfectionist";
 import eslintPluginReactDom from "eslint-plugin-react-dom";
 import eslintPluginReactNamingConvention from "eslint-plugin-react-naming-convention";
-import eslintPluginStylistic from "@stylistic/eslint-plugin";
 import eslintPluginReactX from "eslint-plugin-react-x";
 import { defineConfig } from "eslint/config";
 import { configs, parser } from "typescript-eslint";
@@ -107,8 +108,8 @@ const sortCssArray = {
 };
 
 const config = defineConfig({
-  extends: [configs.recommended],
-  // files: ["src/**/*.{ts,tsx}", "rsbuild.config.ts"],
+  extends: [configs.recommended, eslintConfigPrettier],
+  files: ["src/**/*.{ts,tsx}", "rsbuild.config.ts"],
   ignores: ["./dist/**/*", "node_modules/**"],
   languageOptions: {
     parser,
@@ -162,6 +163,12 @@ const config = defineConfig({
     "@stylistic/jsx-tag-spacing": "error",
     "@stylistic/quotes": ["error", "double"],
     "@typescript-eslint/consistent-type-imports": "error",
+    "@typescript-eslint/naming-convention": [
+      "error",
+      { format: ["camelCase", "PascalCase"], selector: "property" },
+      { filter: { match: true, regex: "^[@&:]" }, format: null, selector: "property" },
+      { format: null, modifiers: ["requiresQuotes"], selector: "property" },
+    ],
     "@typescript-eslint/explicit-function-return-type": "error",
     "@typescript-eslint/no-explicit-any": "error",
     "@typescript-eslint/no-non-null-assertion": "off",

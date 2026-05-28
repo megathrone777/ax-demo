@@ -1,24 +1,23 @@
 import React from "react";
 import { getTopic, useRos, useSubscription } from "rosreact";
 
-import { useDestinations, useMapLocate, useStore } from "@/hooks";
+import { useAppContext, useDestination, useMapLocate } from "@/hooks";
 import { topics } from "@/ros";
-import { clearDestinations } from "@/store";
 import { Button, Icon } from "@/ui";
 
 import { deleteClass, layoutClass } from "./Actions.css";
 
 const Actions: React.FC = () => {
+  const { actions } = useAppContext();
+  const { id, positions } = useDestination();
   const locatePoint = useMapLocate("mainMap");
-  const { id, positions } = useDestinations();
   const ros = useRos();
   const { altitude, latitude, longitude } = useSubscription(topics.GPS) as TGPSData;
-  const { dispatch } = useStore();
 
   const handleClearDestinations = (): void => {
     if (confirm("Are you sure you want delete mission?")) {
       locatePoint([longitude, latitude]);
-      dispatch(clearDestinations(id));
+      actions.clearDestinations(id);
     }
   };
 
@@ -35,7 +34,7 @@ const Actions: React.FC = () => {
         z: number,
       ): {
         header: {
-          frame_id: string;
+          frameId: string;
         };
         pose: {
           orientation: {
@@ -51,7 +50,7 @@ const Actions: React.FC = () => {
           };
         };
       } => ({
-        header: { frame_id: "" },
+        header: { frameId: "" },
         pose: {
           orientation: { w: 1.0, x: 0.0, y: 0.0, z: 0.0 },
           position: { x, y, z },
@@ -64,9 +63,8 @@ const Actions: React.FC = () => {
           makePose(coordinates[1]!, coordinates[0]!, altitude),
         ),
       ];
-
       const pathPoints = {
-        header: { frame_id: "map" },
+        header: { frameId: "map" },
         poses,
       };
 

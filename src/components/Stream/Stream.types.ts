@@ -5,5 +5,4 @@ export interface TConfig extends RTCConfiguration {
 export interface TProps {
   direction: "front" | "reverse";
   showControls: boolean;
-  // ip_addr: string;
 }

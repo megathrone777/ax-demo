@@ -4,16 +4,16 @@ import { Column } from "./Column";
 
 import { wrapperClass, contentClass } from "./Engine.css";
 
-import type { TProps } from "./types";
+import type { TProps } from "./Engine.types";
 
-const Engine: React.FC<TProps> = ({ control_mode, gear_status, speed, steer }) => (
+const Engine: React.FC<TProps> = ({ controlMode, gearStatus, speed, steer }) => (
   <div className={wrapperClass}>
     <div className={contentClass}>
       <Column
         label="speed"
         title={{
           label: "mode",
-          value: control_mode === 2 ? "automatic" : "manual",
+          value: controlMode === 2 ? "automatic" : "manual",
         }}
         value={speed}
       />
@@ -22,7 +22,7 @@ const Engine: React.FC<TProps> = ({ control_mode, gear_status, speed, steer }) =
         label="steering"
         title={{
           label: "gear",
-          value: gear_status,
+          value: gearStatus,
         }}
         value={steer}
       />

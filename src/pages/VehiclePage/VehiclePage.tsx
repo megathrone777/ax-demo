@@ -1,5 +1,5 @@
 import React from "react";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData } from "react-router";
 
 import { Preview } from "./Preview";
 import { Properties } from "./Properties";
@@ -13,11 +13,7 @@ const VehiclePage: React.FC = () => {
     return <div>Vehicle not found.</div>;
   }
 
-  const {
-    active,
-    data: { ip_addr, position },
-    id,
-  } = vehicle;
+  const { active, id, ipAddres, position } = vehicle;
 
   return (
     <div className={wrapperClass}>
@@ -26,7 +22,7 @@ const VehiclePage: React.FC = () => {
       </div>
 
       <div className={columnClass}>
-        <Properties {...{ id, ip_addr, position }} />
+        <Properties {...{ id, ipAddres, position }} />
       </div>
     </div>
   );

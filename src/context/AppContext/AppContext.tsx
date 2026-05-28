@@ -1,21 +1,19 @@
 import React, { useReducer, createContext } from "react";
 
-import { initialStore } from "./initialStore";
-import { reducer } from "./reducer";
+import { AppReducer } from "./AppReducer";
+import { AppStore } from "./AppStore";
 
-import type { TContext } from "./types";
+import type { TAppContext } from "./App.types";
 
-const AppContext = createContext<TContext>({
+const AppContext = createContext<TAppContext>({
   dispatch: (): null => null,
-  store: initialStore,
+  store: AppStore,
 });
 
 const AppProvider: React.FC<{
   children: React.ReactElement;
 }> = ({ children }) => {
-  const [store, dispatch] = useReducer(reducer, initialStore);
-
-  console.log(store.currentIP);
+  const [store, dispatch] = useReducer(AppReducer, AppStore);
 
   return <AppContext value={{ dispatch, store }}>{children}</AppContext>;
 };

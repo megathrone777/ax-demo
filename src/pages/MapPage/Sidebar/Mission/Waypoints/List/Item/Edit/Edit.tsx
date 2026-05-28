@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from "react";
 
-import { useDestinations, useStore } from "@/hooks";
-import type { TDelay } from "@/store";
-import { updateDestinationDelay } from "@/store";
+import { useDestination, useAppContext } from "@/hooks";
 
 import { selectWrapperClass, selectClass, labelClass } from "./Edit.css";
 
 import type { TOption, TProps } from "./Edit.types";
 
 const Edit: React.FC<TProps> = ({ index }) => {
-  const { id, positions } = useDestinations();
-  const { dispatch } = useStore();
+  const { actions } = useAppContext();
+  const { id, positions } = useDestination();
 
   const [{ delay, pointType, sensorType }, setSelectedOption] = useState<TOption>({
     delay: positions[index]!.properties.delay,
@@ -21,17 +19,12 @@ const Edit: React.FC<TProps> = ({ index }) => {
   const handleSelectChange = ({
     currentTarget: { name, value },
   }: React.SyntheticEvent<HTMLSelectElement>): void => {
-    setSelectedOption((prevOptions: TOption): TOption => {
-      return { ...prevOptions, [name]: value };
+    setSelectedOption((prevOptions: TOption): TOption => ({ ...prevOptions, [name]: value }));
+    actions.updateDestinationDelay({
+      delay: value as TDestinationDelay,
+      id,
+      index,
     });
-
-    dispatch(
-      updateDestinationDelay({
-        delay: value as TDelay,
-        id,
-        index,
-      }),
-    );
   };
 
   useEffect((): void => {

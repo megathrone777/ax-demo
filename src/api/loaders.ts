@@ -1,12 +1,10 @@
-import type { LoaderFunction } from "react-router-dom";
+import type { LoaderFunction } from "react-router";
 
 const getVehicles: LoaderFunction = async () => {
   const response = await fetch("/fleet.json");
   const vehicles = (await response.json()) as TVehicle[];
 
-  return {
-    vehicles,
-  };
+  return vehicles;
 };
 
 const getVehicleDetails: LoaderFunction = async ({ params }) => {

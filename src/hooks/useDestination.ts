@@ -1,21 +1,18 @@
 import { useContext, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
-import type { TDestination } from "@/store";
-import { AppContext } from "@/store";
+import { AppContext } from "@/context";
 
-import type { TUseDestinations } from "./types";
-
-const useDestinations: TUseDestinations = () => {
+const useDestination = (): TDestination => {
+  const { id } = useParams();
   const {
     store: { destinations },
   } = useContext(AppContext);
-  const { id } = useParams();
 
   return useMemo((): TDestination => {
     if (id) {
       const currentDestinations: TDestination = destinations.filter(
-        ({ id: vehicleID }): boolean => `${vehicleID}` === id,
+        ({ id: vehicleId }): boolean => `${vehicleId}` === id,
       )[0] || {
         id: +id!,
         name: "",
@@ -35,4 +32,4 @@ const useDestinations: TUseDestinations = () => {
   }, [id, destinations]);
 };
 
-export { useDestinations };
+export { useDestination };

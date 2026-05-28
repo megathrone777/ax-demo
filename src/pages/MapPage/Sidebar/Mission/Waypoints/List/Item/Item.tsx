@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { createPortal } from "react-dom";
 
 import { Modal } from "@/components";
-import { useDestinations, useStore } from "@/hooks";
-import { deleteDestination } from "@/store";
+import { useAppContext, useDestination } from "@/hooks";
 import { Icon } from "@/ui";
 
 import { Edit } from "./Edit";
@@ -14,12 +13,12 @@ import { iconClass, buttonClass, contentClass, optionsClass } from "./Item.css";
 import type { TProps, TModals } from "./Item.types";
 
 const Item: React.FC<TProps> = ({ index, latitude, longitude }) => {
-  const { id, positions } = useDestinations();
+  const { actions } = useAppContext();
+  const { id, positions } = useDestination();
   const [modalsView, toggleModalsView] = useState<TModals>({
     edit: false,
     save: false,
   });
-  const { dispatch } = useStore();
 
   const handleModalOpen = ({ currentTarget }: React.SyntheticEvent<HTMLButtonElement>): void => {
     toggleModalsView((prevModals: TModals) => ({
@@ -36,12 +35,10 @@ const Item: React.FC<TProps> = ({ index, latitude, longitude }) => {
   };
 
   const handleDeleteDestination = (): void => {
-    dispatch(
-      deleteDestination({
-        id,
-        index,
-      }),
-    );
+    actions.deleteDestination({
+      id,
+      index,
+    });
   };
 
   return (

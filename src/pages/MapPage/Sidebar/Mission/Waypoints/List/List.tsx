@@ -1,8 +1,7 @@
 import React from "react";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 
-import { useDestinations, useStore } from "@/hooks";
-import { swapDestinations } from "@/store";
+import { useAppContext, useDestination } from "@/hooks";
 
 import { Item } from "./Item";
 
@@ -50,18 +49,16 @@ const DraggableItem: React.FC<TDraggableItemProps> = ({
 );
 
 const List: React.FC = () => {
-  const { id, positions } = useDestinations();
-  const { dispatch } = useStore();
+  const { actions } = useAppContext();
+  const { id, positions } = useDestination();
 
   const handleDragEnd: OnDragEndResponder = ({ destination, source }): void => {
     if (!destination) return;
-    dispatch(
-      swapDestinations({
-        endIndex: destination.index,
-        id,
-        startIndex: source.index,
-      }),
-    );
+    actions.swapDestinations({
+      endIndex: destination.index,
+      id,
+      startIndex: source.index,
+    });
   };
 
   return (

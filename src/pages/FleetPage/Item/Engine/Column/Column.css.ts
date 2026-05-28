@@ -1,6 +1,6 @@
 import { css } from "@/theme";
 
-export const wrapperClass = css(({ colors, devices }) => ({
+export const wrapperClass = css(({ colors }) => ({
   backgroundColor: colors.blackDarker,
   borderRight: `1px solid ${colors.black}`,
   display: "flex",
@@ -8,16 +8,8 @@ export const wrapperClass = css(({ colors, devices }) => ({
   flexDirection: "column",
   flexGrow: 1,
 
-  selectors: {
-    "&:last-of-type": {
-      borderRight: "none",
-    },
-  },
-
-  "@media": {
-    [devices.desktop]: {
-      // no specific desktop override
-    },
+  ":last-of-type": {
+    borderRight: "none",
   },
 }));
 
@@ -33,6 +25,7 @@ export const headingClass = css(({ colors, devices }) => ({
       height: 49,
       padding: 5,
     },
+
     [devices.mobile]: {
       backgroundColor: colors.blackLightest,
       fontSize: 15,
@@ -53,6 +46,7 @@ export const titleLabelClass = css(({ colors, devices, fonts }) => ({
     [devices.desktop]: {
       fontSize: 16,
     },
+
     [devices.mobile]: {
       fontSize: 15,
     },
@@ -93,6 +87,7 @@ export const labelClass = css(({ colors, devices, fonts }) => ({
     [devices.desktop]: {
       fontSize: 15,
     },
+
     [devices.mobile]: {
       fontSize: 14,
     },

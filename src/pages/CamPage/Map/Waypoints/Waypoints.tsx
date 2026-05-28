@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { Marker } from "@vis.gl/react-maplibre";
 import { useRos, useSubscription } from "rosreact";
 

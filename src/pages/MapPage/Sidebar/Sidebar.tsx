@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { useMap } from "@vis.gl/react-maplibre";
 
 import { Burger, Button } from "@/ui";

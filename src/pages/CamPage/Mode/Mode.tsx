@@ -4,7 +4,7 @@ import { Button } from "@/ui";
 
 import { wrapperClass } from "./Mode.css";
 
-import type { TDirection } from "./types";
+import type { TDirection } from "./Mode.types";
 
 const Mode: React.FC = () => {
   const [direction, setDirection] = useState<TDirection>("forward");

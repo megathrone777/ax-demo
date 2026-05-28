@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 
-import type { TUseResize } from "./types";
-
-const useResize: TUseResize = (breakpoint) => {
+const useResize = (breakpoint: number): boolean => {
   const [isVisible, toggleVisible] = useState<boolean>(document.body.clientWidth < breakpoint);
 
   const onResize: ResizeObserverCallback = (entries): void => {

@@ -4,14 +4,14 @@ import { points } from "@turf/helpers";
 import { Layer, Source, useMap } from "@vis.gl/react-maplibre";
 
 import { Tiles } from "@/components";
-import { useStore, useTheme } from "@/hooks";
+import { useAppContext, useTheme } from "@/hooks";
 
 import { zoomClass } from "./Overlay.css";
 
 const Overlay: React.FC = () => {
   const { mainMap } = useMap();
   const { colors } = useTheme();
-  const { store } = useStore();
+  const { store } = useAppContext();
   const [zoom, setZoom] = React.useState(0);
   const { area, persons } = store;
 

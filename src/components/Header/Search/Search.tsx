@@ -1,26 +1,25 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 import { Geocoder } from "@/components";
-import { useMapLocate, useStore } from "@/hooks";
-import { setArea } from "@/store";
+import { useAppContext, useMapLocate } from "@/hooks";
 
 import { wrapperClass, listClass, itemClass } from "./Search.css";
 
 import type { Position } from "geojson";
 
 const Search: React.FC = () => {
+  const { actions } = useAppContext();
   const [suggestions, setSuggestions] = useState<TSuggestion[]>([]);
   const locatePoint = useMapLocate("mainMap");
   const navigate = useNavigate();
-  const { dispatch } = useStore();
 
   const handleResults = (suggestions: TSuggestion[]): void => {
     setSuggestions(suggestions);
   };
 
   const handleResultsClear = (): void => {
-    dispatch(setArea([]));
+    actions.setArea([]);
     navigate("/map", { replace: true });
     setSuggestions([]);
   };
@@ -28,8 +27,8 @@ const Search: React.FC = () => {
   const handleSuggestionClick = (center: Position): void => {
     navigate("/map", { replace: true });
     setSuggestions([]);
-    dispatch(setArea(center));
-    locatePoint([center[0]!, center[1]!], 10);
+    actions.setArea(center);
+    locatePoint([center[0], center[1]], 10);
   };
 
   return (

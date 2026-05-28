@@ -15,6 +15,7 @@ export const loaderWrapperClass = css({
 export const clearClass = css(({ colors }) => ({
   appearance: "none",
   backgroundColor: "transparent",
+  border: "none",
   color: colors.whiteDarker,
   cursor: "pointer",
   height: 20,

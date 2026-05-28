@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 
-import { useDestinations, useStore } from "@/hooks";
-import { updateDestinationName } from "@/store";
+import { useDestination, useAppContext } from "@/hooks";
 import { Input } from "@/ui";
 
 import type { TProps } from "./Save.types";
 
 const Save: React.FC<TProps> = ({ index, onSave }) => {
   const [name, setName] = useState<string>("");
-  const { id, positions } = useDestinations();
-  const { dispatch } = useStore();
+  const { id, positions } = useDestination();
+  const { actions } = useAppContext();
 
   const handleInputChange = ({ currentTarget }: React.SyntheticEvent<HTMLInputElement>): void => {
     setName(currentTarget.value);
@@ -17,13 +16,11 @@ const Save: React.FC<TProps> = ({ index, onSave }) => {
 
   const handleSubmit = (event: React.SyntheticEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    dispatch(
-      updateDestinationName({
-        id,
-        index,
-        name,
-      }),
-    );
+    actions.updateDestinationName({
+      id,
+      index,
+      name,
+    });
     onSave();
   };
 

@@ -4,7 +4,7 @@ import { Button } from "@/ui";
 
 import { actionClass, wrapperClass, titleClass, layoutClass } from "./Actions.css";
 
-import type { TProps } from "./types";
+import type { TProps } from "./Actions.types";
 
 const Actions: React.FC<TProps> = ({ list, title }) => {
   const [currentAction, setCurrentAction] = useState<string>("");

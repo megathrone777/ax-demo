@@ -1,3 +1,5 @@
+import { calc } from "@vanilla-extract/css-utils";
+
 import { css } from "@/theme";
 
 export const wrapperClass = css(({ devices }) => ({
@@ -37,5 +39,5 @@ export const layoutClass = css(({ devices }) => ({
 }));
 
 export const actionClass = css({
-  flex: "0 1 calc(50% - 4px)",
+  flex: `0 1 ${calc("50%").subtract("4px")}`,
 });

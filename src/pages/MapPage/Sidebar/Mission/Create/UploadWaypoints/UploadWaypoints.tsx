@@ -1,7 +1,6 @@
 import React from "react";
 
-import { useDestinations, useStore } from "@/hooks";
-import { attachDestinations } from "@/store";
+import { useAppContext, useDestination } from "@/hooks";
 import { Icon } from "@/ui";
 
 import { labelClass, inputClass, iconClass } from "./UploadWaypoints.css";
@@ -9,8 +8,8 @@ import { labelClass, inputClass, iconClass } from "./UploadWaypoints.css";
 import type { Position } from "geojson";
 
 const UploadWaypoints: React.FC = () => {
-  const { id } = useDestinations();
-  const { dispatch } = useStore();
+  const { actions } = useAppContext();
+  const { id } = useDestination();
 
   const handleFileUpload = ({ currentTarget }: React.SyntheticEvent<HTMLInputElement>): void => {
     if (currentTarget.files) {
@@ -53,12 +52,10 @@ const UploadWaypoints: React.FC = () => {
             coordinates.push([+lat, +lon]);
           }
 
-          dispatch(
-            attachDestinations({
-              coordinates,
-              id,
-            }),
-          );
+          actions.attachDestinations({
+            coordinates,
+            id,
+          });
         }
       };
     }

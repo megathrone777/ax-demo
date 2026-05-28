@@ -4,7 +4,7 @@ import { Input } from "@/ui";
 
 import { rowClass, cellClass } from "./Item.css";
 
-import type { TProps } from "./types";
+import type { TProps } from "./Item.types";
 
 const Item: React.FC<TProps> = ({ name, value }) => {
   const [inputValue, setInputValue] = useState<string>(value);

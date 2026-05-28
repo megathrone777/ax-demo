@@ -1,8 +1,7 @@
 import React, { useCallback } from "react";
 import { useMap } from "@vis.gl/react-maplibre";
 
-import { useBoundaries, useDestinations, useStore } from "@/hooks";
-import { deleteBoundary } from "@/store";
+import { useBoundary, useDestination, useAppContext } from "@/hooks";
 import { Icon } from "@/ui";
 
 import {
@@ -18,10 +17,10 @@ import type { Feature, Polygon, Position } from "geojson";
 import type { TFormattedBoundary } from "./Boundaries.types";
 
 const Boundaries: React.FC = () => {
-  const { id, polygons } = useBoundaries();
-  const { name } = useDestinations();
+  const { actions } = useAppContext();
+  const { id, polygons } = useBoundary();
+  const { name } = useDestination();
   const { mainMap } = useMap();
-  const { dispatch } = useStore();
 
   const getFormattedCoordinates = (): TFormattedBoundary[] =>
     polygons.map(
@@ -51,7 +50,7 @@ const Boundaries: React.FC = () => {
   const handlePolygonDelete = useCallback(
     ({ currentTarget }: React.SyntheticEvent<HTMLButtonElement>): void => {
       if (mainMap) {
-        dispatch(deleteBoundary({ id, polygonId: currentTarget.id }));
+        actions.deleteBoundary({ id, polygonId: currentTarget.id });
         mainMap.getMap().fire("draw.polygondelete", {
           polygonId: currentTarget.id,
         });

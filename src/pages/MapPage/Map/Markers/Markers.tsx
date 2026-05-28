@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import { Marker } from "@vis.gl/react-maplibre";
 import { useSubscription } from "rosreact";
 
@@ -13,8 +13,6 @@ const Markers: React.FC = () => {
   const { heading: angle } = useSubscription(topics.HEADING) as { heading: number };
   const { latitude, longitude, speed } = useSubscription(topics.GPS) as TGPSData;
   const { id } = useParams();
-
-  console.log(speed);
 
   const handleMarkerClick = (): void => {
     navigate("/map/1", { replace: true });

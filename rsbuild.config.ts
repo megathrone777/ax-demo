@@ -1,16 +1,18 @@
-// import { spawn, type ChildProcess } from "child_process";
-import { readFileSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 import { resolve } from "path";
 
-import { defineConfig, loadEnv } from "@rsbuild/core";
+import { defineConfig, loadEnv, type Rspack } from "@rsbuild/core";
 import { pluginEslint } from "@rsbuild/plugin-eslint";
 import { pluginReact } from "@rsbuild/plugin-react";
 import { pluginTypeCheck } from "@rsbuild/plugin-type-check";
 import { VanillaExtractPlugin } from "@vanilla-extract/webpack-plugin";
 
 const { publicVars } = loadEnv({ prefixes: ["APP_"], processEnv: import.meta.env });
+const devCertPath = resolve(import.meta.dirname, "certificates/localhost-cert.pem");
+const devKeyPath = resolve(import.meta.dirname, "certificates/localhost-key.pem");
+const devCertExists = existsSync(devCertPath) && existsSync(devKeyPath);
 
-const config = defineConfig({
+const config = defineConfig(({ command }) => ({
   dev: {
     cliShortcuts: {
       help: false,
@@ -48,22 +50,15 @@ const config = defineConfig({
     },
     extensions: [".js", ".ts", ".tsx"],
   },
-  // server: {
-  //   setup: ({ action }) => {
-  //     if (action !== "dev") return;
-  //     const sim: ChildProcess = spawn("node", ["./src/ros/bridge.ts"], {
-  //       stdio: "inherit",
-  //     });
-
-  //     return (): void => {
-  //       process.on("exit", () => sim.kill());
-  //       process.on("SIGINT", () => {
-  //         sim.kill();
-  //         process.exit(0);
-  //       });
-  //     };
-  //   },
-  // },
+  server:
+    command === "dev" && devCertExists
+      ? {
+          https: {
+            cert: readFileSync(devCertPath),
+            key: readFileSync(devKeyPath),
+          },
+        }
+      : undefined,
   source: {
     define: publicVars,
     entry: {
@@ -72,7 +67,7 @@ const config = defineConfig({
     exclude: [resolve(import.meta.dirname, "dist")],
   },
   tools: {
-    rspack: (config, { appendPlugins, isDev }) => {
+    rspack: (config, { appendPlugins, isDev }): Rspack.Configuration | void => {
       appendPlugins([new VanillaExtractPlugin()]);
 
       if (isDev) {
@@ -83,6 +78,6 @@ const config = defineConfig({
       }
     },
   },
-});
+}));
 
 export default config;

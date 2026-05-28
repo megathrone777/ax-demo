@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { useRos, closeConnection, connect } from "rosreact";
+import React, { useState } from "react";
+import { useRos, closeConnection } from "rosreact";
 
-import { useStore } from "@/hooks";
-import { setCurrentIP } from "@/store";
+import { useAppContext } from "@/hooks";
 import { Input } from "@/ui";
 
 import {
@@ -16,11 +15,11 @@ import {
   ipErrorClass,
 } from "./Details.css";
 
-import type { TProps } from "./types";
+import type { TProps } from "./Details.types";
 
 const Details: React.FC<TProps> = ({ id, position: { lat, lon } }) => {
   const ros = useRos();
-  const { dispatch, store } = useStore();
+  const { actions, store } = useAppContext();
   const [ipAddress, setIPAddress] = useState<string>(store.currentIP);
   const [ipAddressError, setIpAddressError] = useState<boolean>(false);
 
@@ -46,21 +45,18 @@ const Details: React.FC<TProps> = ({ id, position: { lat, lon } }) => {
   const handleIpAddressSubmit = (event: React.SyntheticEvent<HTMLFormElement>): void => {
     event.preventDefault();
     closeConnection(ros);
-    dispatch(setCurrentIP(ipAddress));
+    actions.setCurrentIP(ipAddress);
   };
-
-  useEffect((): void => {
-    ros.on("close", (): void => {
-      connect(ros, `ws://${import.meta.env.APP_ROS_IP}:9090`);
-    });
-  }, [store.currentIP]);
 
   return (
     <div className={wrapperClass}>
       <table className={tableClass}>
         <thead className={theadClass}>
           <tr className={rowClass}>
-            <th className={theadCellClass} colSpan={2}>
+            <th
+              className={theadCellClass}
+              colSpan={2}
+            >
               vehicle id: <span className={idClass}>{id}</span>
             </th>
           </tr>
@@ -69,6 +65,7 @@ const Details: React.FC<TProps> = ({ id, position: { lat, lon } }) => {
         <tbody>
           <tr className={rowClass}>
             <td className={cellClass}>current position</td>
+
             <td className={cellClass}>
               LAT: {lat.toFixed(4)}
               <br />

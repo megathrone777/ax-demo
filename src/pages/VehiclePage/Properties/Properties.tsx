@@ -2,7 +2,7 @@ import React from "react";
 
 import { Button } from "@/ui";
 
-import { items } from "./data";
+import { vehicleProps } from "./data";
 import { Item } from "./Item";
 
 import {
@@ -16,9 +16,9 @@ import {
   idClass,
 } from "./Properties.css";
 
-import type { TProps } from "./types";
+import type { TProps } from "./Properties.types";
 
-const Properties: React.FC<TProps> = ({ id, ip_addr, position }) => {
+const Properties: React.FC<TProps> = ({ id, ipAddres, position }) => {
   const handleSubmit = (event: React.SyntheticEvent<HTMLFormElement>): void => {
     event.preventDefault();
 
@@ -55,6 +55,7 @@ const Properties: React.FC<TProps> = ({ id, ip_addr, position }) => {
         <tbody>
           <tr className={rowClass}>
             <td className={cellClass}>current position</td>
+
             <td className={cellClass}>
               LAT: {position.lat.toFixed(4)}
               <br />
@@ -66,18 +67,15 @@ const Properties: React.FC<TProps> = ({ id, ip_addr, position }) => {
 
           <tr className={rowClass}>
             <td className={cellClass}>network</td>
-            <td className={cellClass}>{ip_addr}</td>
+            <td className={cellClass}>{ipAddres}</td>
           </tr>
 
-          {items &&
-            Object.entries(items).map(
-              ([name, value]): React.ReactElement => (
-                <Item
-                  key={name}
-                  {...{ name, value }}
-                />
-              ),
-            )}
+          {Object.entries(vehicleProps).map<React.ReactElement>(([name, value]) => (
+            <Item
+              key={`vehicle-props-${name}`}
+              {...{ name, value }}
+            />
+          ))}
         </tbody>
 
         <tfoot>
@@ -91,6 +89,7 @@ const Properties: React.FC<TProps> = ({ id, ip_addr, position }) => {
                 Update
               </Button>
             </td>
+
             <td className={tfootCellClass} />
           </tr>
         </tfoot>

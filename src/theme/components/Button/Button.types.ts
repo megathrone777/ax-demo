@@ -1,5 +1,5 @@
 import type { ButtonHTMLAttributes, DetailedHTMLProps } from "react";
-import type { LinkProps } from "react-router-dom";
+import type { LinkProps } from "react-router";
 
 export interface TProps extends DetailedHTMLProps<
   ButtonHTMLAttributes<HTMLButtonElement>,

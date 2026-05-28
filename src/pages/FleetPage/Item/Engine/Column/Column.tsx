@@ -1,16 +1,16 @@
 import React from "react";
 
 import {
-  wrapperClass,
+  contentClass,
   headingClass,
+  labelClass,
   titleLabelClass,
   titleValueClass,
-  contentClass,
-  labelClass,
   valueClass,
+  wrapperClass,
 } from "./Column.css";
 
-import type { TProps } from "./types";
+import type { TProps } from "./Column.types";
 
 const Column: React.FC<TProps> = ({ label, title, value }) => (
   <div className={wrapperClass}>

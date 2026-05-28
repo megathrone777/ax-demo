@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useFetcher } from "react-router-dom";
+import { useFetcher } from "react-router";
 
 import { Button, Input, Spinner } from "@/ui";
 

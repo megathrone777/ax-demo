@@ -1,8 +1,8 @@
 import React from "react";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router";
 import { useRos } from "rosreact";
 
-import { useStore } from "@/hooks";
+import { useAppContext } from "@/hooks";
 
 import {
   wrapperClass,
@@ -18,7 +18,7 @@ import {
 const Details: React.FC = () => {
   const ros = useRos();
   const { id } = useParams();
-  const { store } = useStore();
+  const { store } = useAppContext();
 
   const connectionStatus = ros.isConnected ? "connected" : "disconnected";
 

@@ -29,10 +29,10 @@ const topics: Record<"GPS" | "HEADING" | "JOYSTICK" | "PATH", UseSubscriptionPro
       err: 0,
       latitude: 50.808406829833984,
       longitude: 14.882061004638672,
-      speed: 5,
+      speed: 0,
       status: {
-        satellites_used: 8,
-        satellites_visible: 20,
+        satellitesUsed: 8,
+        satellitesVisible: 20,
       },
     },
 

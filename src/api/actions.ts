@@ -1,9 +1,9 @@
-import { redirect } from "react-router-dom";
+import { redirect } from "react-router";
 
 import type { TLoginErrors } from "@/pages/LoginPage/LoginPage.types";
 import type { TRegistrationErrors } from "@/pages/RegistrationPage/RegistrationPage.types";
 
-import type { ActionFunction } from "react-router-dom";
+import type { ActionFunction } from "react-router";
 
 export const registrationAction: ActionFunction = async ({ request }) => {
   const formData = await request.formData();

@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { useMap } from "@vis.gl/react-maplibre";
 
 import { useResize } from "@/hooks";
@@ -17,7 +17,7 @@ import {
   burgerWrapperClass,
 } from "./Sidebar.css";
 
-import type { TProps } from "./types";
+import type { TProps } from "./Sidebar.types";
 
 const Sidebar: React.FC<TProps> = ({ onCollapse }) => {
   const { id } = useParams();
@@ -69,10 +69,12 @@ const Sidebar: React.FC<TProps> = ({ onCollapse }) => {
       onTouchMove={handleTouchMove}
       onTouchStart={handleTouchStart}
       onTransitionEnd={handleTransitionEnd}
-      style={{
-        "--sidebar-x": isOpened ? "0px" : "400px",
-        "--sidebar-x-sm": isOpened ? "0px" : "300px",
-      } as React.CSSProperties}
+      style={
+        {
+          "--sidebar-x": isOpened ? "0px" : "400px",
+          "--sidebar-x-sm": isOpened ? "0px" : "300px",
+        } as React.CSSProperties
+      }
     >
       <div className={headingClass}>
         <div className={burgerWrapperClass}>
