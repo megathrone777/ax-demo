@@ -10,4 +10,5 @@ export interface TJoystickData {
 export interface TProps {
   lockX?: TCollectionOptions["lockX"];
   lockY?: TCollectionOptions["lockY"];
+  onValue: (value: number) => void;
 }

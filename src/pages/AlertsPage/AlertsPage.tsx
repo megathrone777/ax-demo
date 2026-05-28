@@ -5,7 +5,7 @@ import { Item } from "./Item";
 
 import { listClass } from "./AlertsPage.css";
 
-import type { TAlert } from "./Item/types";
+import type { TAlert } from "./Item/Item.types";
 
 const AlertsPage: React.FC = () => (
   <div className={listClass}>

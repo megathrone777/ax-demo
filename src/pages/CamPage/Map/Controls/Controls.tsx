@@ -3,6 +3,7 @@ import { useSubscription } from "rosreact";
 
 import { useMapLocate } from "@/hooks";
 import { topics } from "@/ros";
+import { Icon } from "@/ui";
 
 import { centerClass, iconClass } from "./Controls.css";
 
@@ -20,9 +21,10 @@ const Controls: React.FC = () => {
       onClick={handleCenterClick}
       type="button"
     >
-      <svg className={iconClass}>
-        <use xlinkHref="images/sprite.svg#targetIcon" />
-      </svg>
+      <Icon
+        className={iconClass}
+        id="target"
+      />
     </button>
   );
 };

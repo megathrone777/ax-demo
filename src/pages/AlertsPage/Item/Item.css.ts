@@ -12,13 +12,11 @@ export const wrapperClass = css(({ colors, devices, fonts }) => ({
   justifyContent: "space-between",
   paddingInline: 8,
   position: "relative",
-  selectors: {
-    "&:last-of-type": {
-      marginBottom: 0,
-    },
-  },
-
   textTransform: "uppercase",
+
+  ":last-of-type": {
+    marginBottom: 0,
+  },
 
   "@media": {
     [devices.mobile]: {

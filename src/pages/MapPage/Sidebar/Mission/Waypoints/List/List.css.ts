@@ -1,6 +1,7 @@
 import { css } from "@/theme";
 
 export const itemClass = css(({ colors, devices }) => ({
+  alignItems: "center",
   border: "1px solid transparent",
   boxSizing: "border-box",
   columnGap: 20,

@@ -14,8 +14,11 @@ import {
 
 import type { TProps } from "./MarkerWave.types";
 
-const MarkerWave: React.FC<TProps> = ({ angle, isActive, tooltips }) => (
-  <span className={wrapperClass}>
+const MarkerWave: React.FC<TProps> = ({ angle, isActive, isMoving, tooltips }) => (
+  <span
+    className={wrapperClass}
+    data-moving={isMoving ? "true" : undefined}
+  >
     <Icon
       className={iconClass}
       id="car"

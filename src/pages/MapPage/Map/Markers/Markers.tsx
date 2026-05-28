@@ -30,6 +30,7 @@ const Markers: React.FC = () => {
       <MarkerWave
         {...{ angle }}
         isActive={id === "1"}
+        isMoving={Math.abs(speed) > 0}
         tooltips={[
           `lat: ${latitude.toFixed(5)} | lon: ${longitude.toFixed(5)}`,
           `IP: ${import.meta.env.APP_VEHICLE_IP}`,

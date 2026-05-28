@@ -1,4 +1,4 @@
-import type { TAlert } from "./Item/types";
+import type { TAlert } from "./Item/Item.types";
 
 export const items: TAlert[] = [
   {

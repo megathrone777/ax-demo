@@ -27,11 +27,15 @@ export const tooltipClass = css(({ colors }) => ({
   borderRadius: 5,
   bottom: "calc(50% + 15px)",
   color: colors.orange,
-  display: "none",
+  display: "inline-flex",
   flexDirection: "column",
   fontSize: 12,
+  opacity: 0,
   padding: 5,
+  pointerEvents: "none",
   position: "absolute",
+  transition: "opacity 0.25s ease",
+  visibility: "hidden",
   zIndex: 2,
 }));
 
@@ -123,10 +127,12 @@ export const angleClass = css({
   },
 });
 
+const tooltipVisible = { opacity: 1, visibility: "visible" } as const;
+
 globalStyle(`${wrapperClass}:hover > ${tooltipClass}`, ({ devices }) => ({
   "@media": {
-    [devices.pointerFine]: {
-      display: "inline-flex",
-    },
+    [devices.pointerFine]: tooltipVisible,
   },
 }));
+
+globalStyle(`${wrapperClass}[data-moving="true"] > ${tooltipClass}`, tooltipVisible);

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useAsyncValue, useLinkClickHandler } from "react-router-dom";
+import { useLoaderData, useLinkClickHandler } from "react-router-dom";
 import bbox from "@turf/bbox";
 import { lineString } from "@turf/helpers";
 import { randomPosition } from "@turf/random";
@@ -19,13 +19,13 @@ import {
 } from "./Item.css";
 
 import type { BBox } from "geojson";
-import type { TProps } from "./types";
+import type { TProps } from "./Item.types";
 
 const Item: React.FC<TProps> = ({ description, time, type }) => {
-  const vehicles = useAsyncValue() as TVehicle[];
+  const { vehicles } = useLoaderData<{ vehicles: TVehicle[] }>();
   const [currentBounds, setCurrentBounds] = useState<BBox>([0, 0, 0, 0]);
   const { dispatch } = useStore();
-  const handleClick = useLinkClickHandler("/map");
+  const handleClick = useLinkClickHandler("/map/1");
 
   const handleRouteClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void => {
     handleClick(event);
@@ -55,7 +55,7 @@ const Item: React.FC<TProps> = ({ description, time, type }) => {
       <div className={buttonsClass}>
         <a
           className={linkClass}
-          href="/map"
+          href="/map/1"
           onClick={handleRouteClick}
         >
           <Icon

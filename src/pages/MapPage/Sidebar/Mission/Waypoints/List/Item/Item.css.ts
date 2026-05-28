@@ -16,6 +16,7 @@ export const optionsClass = css({
 export const iconClass = css(({ devices }) => ({
   display: "block",
   flexBasis: 25,
+  transform: "translateY(1px)",
   width: 25,
 
   "@media": {

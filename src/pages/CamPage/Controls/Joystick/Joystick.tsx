@@ -1,12 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import { create } from "nipplejs";
-import { getTopic, useRos } from "rosreact";
-
-import { topics } from "@/ros";
 
 import { wrapperClass } from "./Joystick.css";
 
-import type { TProps, TJoystickData } from "./Joystick.types";
+import type { TProps } from "./Joystick.types";
 
 const joystickDefaults = {
   maxAngularSpeed: 0.85,
@@ -15,18 +12,8 @@ const joystickDefaults = {
   maxSpeed: 4.0,
 };
 
-const Joystick: React.FC<TProps> = ({ lockX, lockY }) => {
-  const ros = useRos();
-  const rosRef = useRef(ros);
+const Joystick: React.FC<TProps> = ({ lockX, lockY, onValue }) => {
   const joystickZoneRef = useRef<HTMLDivElement>(null);
-  const joyStickDataRef = useRef<TJoystickData>({
-    angularSpeed: 0.0,
-    linearSpeed: 0.0,
-  });
-
-  useEffect((): void => {
-    rosRef.current = ros;
-  }, [ros]);
 
   useEffect((): void => {
     if (!joystickZoneRef.current) {
@@ -49,54 +36,32 @@ const Joystick: React.FC<TProps> = ({ lockX, lockY }) => {
     joystickManager.on("move", ({ data: nipple }): void => {
       const { angle, distance } = nipple;
 
+      console.log(angle, distance, "MOVE");
+
       if (lockX) {
         const { maxAngularSpeed, maxDistance } = joystickDefaults;
 
-        joyStickDataRef.current.angularSpeed =
+        onValue(
           Math.round(
             ((Math.cos(angle.radian) * maxAngularSpeed * distance) / maxDistance + Number.EPSILON) *
               1000,
-          ) / 1000;
+          ) / 1000,
+        );
       } else {
         const { maxDistance, maxLinearSpeed, maxSpeed } = joystickDefaults;
 
-        joyStickDataRef.current.linearSpeed =
+        onValue(
           Math.round(
             ((Math.sin(angle.radian) * maxLinearSpeed * distance) / maxDistance + Number.EPSILON) *
               maxSpeed *
               1000,
-          ) / 1000;
+          ) / 1000,
+        );
       }
-
-      getTopic(rosRef.current, topics.JOYSTICK).publish({
-        lateral: {
-          steering_tire_angle: joyStickDataRef.current.angularSpeed,
-          steering_tire_rotation_rate: 0.0,
-        },
-        longitudinal: {
-          jerk: 0.0,
-          speed: joyStickDataRef.current.linearSpeed,
-        },
-      });
     });
 
     joystickManager.on("end", (): void => {
-      if (lockX) {
-        joyStickDataRef.current.angularSpeed = 0.0;
-      } else {
-        joyStickDataRef.current.linearSpeed = 0.0;
-      }
-
-      getTopic(rosRef.current, topics.JOYSTICK).publish({
-        lateral: {
-          steering_tire_angle: joyStickDataRef.current.angularSpeed,
-          steering_tire_rotation_rate: 0.0,
-        },
-        longitudinal: {
-          jerk: 0.0,
-          speed: joyStickDataRef.current.linearSpeed,
-        },
-      });
+      onValue(0.0);
     });
   }, []);
 

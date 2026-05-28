@@ -9,7 +9,7 @@ import { topics } from "@/ros";
 import { MarkerWave } from "@/ui";
 
 const Waypoints: React.FC = () => {
-  const locatePoint = useMapLocate("mainMap");
+  const locatePoint = useMapLocate("controlsMap");
   const { id } = useParams();
   const [enabled, toggleEnabled] = useState<boolean>();
   const { isConnected } = useRos();
@@ -36,17 +36,11 @@ const Waypoints: React.FC = () => {
     toggleEnabled(false);
   }, [isConnected]);
 
-  useEffect((): void | VoidFunction => {
+  useEffect((): void => {
     if (!enabled) return;
 
-    const intervalId = setInterval((): void => {
-      handleMapUpdateRef.current();
-    }, 7000);
-
-    return (): void => {
-      clearInterval(intervalId);
-    };
-  }, [enabled]);
+    handleMapUpdateRef.current();
+  }, [latitude, longitude, enabled]);
 
   return (
     <>
@@ -62,6 +56,7 @@ const Waypoints: React.FC = () => {
         <MarkerWave
           {...{ angle }}
           isActive
+          isMoving={Math.abs(speed) > 0}
           tooltips={[`ID: ${id}`, `IP: ${import.meta.env.APP_VEHICLE_IP}`, `${speed} m/s`]}
         />
       </Marker>

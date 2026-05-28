@@ -4,10 +4,10 @@ import { useLoaderData } from "react-router-dom";
 import { Preview } from "./Preview";
 import { Properties } from "./Properties";
 
-import { columnClass } from "./VehiclePage.css";
+import { wrapperClass, columnClass } from "./VehiclePage.css";
 
 const VehiclePage: React.FC = () => {
-  const vehicle = useLoaderData<TVehicle | null>();
+  const vehicle = useLoaderData<null | TVehicle>();
 
   if (!vehicle) {
     return <div>Vehicle not found.</div>;
@@ -20,7 +20,7 @@ const VehiclePage: React.FC = () => {
   } = vehicle;
 
   return (
-    <div>
+    <div className={wrapperClass}>
       <div className={columnClass}>
         <Preview isOnline={active} />
       </div>

@@ -1,70 +1,46 @@
-import React, { useEffect, useRef, useState } from "react";
-import { GLTFModel } from "react-3d-viewer";
+import React, { Suspense } from "react";
+import { Bounds, OrbitControls, useGLTF } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
 
-import { useTheme } from "@/hooks";
 import { Spinner } from "@/ui";
 
 import { wrapperClass, statusClass } from "./Preview.css";
 
 import type { TProps } from "./Preview.types";
 
-const Preview: React.FC<TProps> = ({ isOnline }) => {
-  const { colors } = useTheme();
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const [isLoading, toggleLoading] = useState<boolean>(true);
-  const [dimensions, setDimensions] = useState<{
-    height: number;
-    width: number;
-  }>({
-    height: 0,
-    width: 0,
-  });
+const VehicleModel: React.FC = () => {
+  const { scene } = useGLTF("model.gltf");
 
-  const handleModelLoaded = (): void => {
-    toggleLoading(false);
-  };
-
-  const onResize: ResizeObserverCallback = (entries): void => {
-    const { height, width } = entries[0]!.contentRect;
-
-    setDimensions({
-      height,
-      width,
-    });
-  };
-
-  useEffect((): VoidFunction => {
-    const observer = new ResizeObserver(onResize);
-
-    if (wrapperRef.current) {
-      observer.observe(wrapperRef.current);
-    }
-
-    return (): void => {
-      if (wrapperRef.current) {
-        observer.unobserve(wrapperRef.current);
-      }
-    };
-  }, [wrapperRef.current]);
-
-  return (
-    <div className={wrapperClass} ref={wrapperRef}>
-      <p className={statusClass[isOnline ? "online" : "offline"]}>{isOnline ? "Online" : "Offline"}</p>
-
-      {wrapperRef.current && (
-        <GLTFModel
-          antialias
-          background={colors.blackDarker}
-          height={dimensions.height}
-          onLoad={handleModelLoaded}
-          src="model.gltf"
-          width={dimensions.width}
-        />
-      )}
-
-      {isLoading && <Spinner />}
-    </div>
-  );
+  return <primitive object={scene} />;
 };
+
+const Preview: React.FC<TProps> = ({ isOnline }) => (
+  <div className={wrapperClass}>
+    <p className={statusClass[isOnline ? "online" : "offline"]}>
+      {isOnline ? "Online" : "Offline"}
+    </p>
+
+    <Suspense fallback={<Spinner />}>
+      <Canvas camera={{ fov: 45, position: [5, 3, 5] }}>
+        <ambientLight intensity={1} />
+
+        <directionalLight
+          intensity={1}
+          position={[5, 10, 5]}
+        />
+
+        <Bounds
+          clip
+          fit
+          observe
+        >
+          <VehicleModel />
+        </Bounds>
+
+        <OrbitControls makeDefault />
+      </Canvas>
+    </Suspense>
+  </div>
+);
 
 export { Preview };
