@@ -1,35 +1,58 @@
+import { readFileSync } from "fs";
+import { createServer } from "https";
+import { resolve } from "path";
+
 import { WebSocketServer, type WebSocket } from "ws";
 
-type TLatLng = {
-  lat: number;
-  lng: number;
+export const TOPIC_CONTROL = "control";
+export const TOPIC_GPS = "gps";
+export const TOPIC_HEADING = "heading";
+export const TOPIC_PATH = "path";
+
+interface TVehicleData extends TVehiclePosition, Pick<TVehicle, "speed"> {
+  autoPilot: boolean;
+  heading: number;
+  waypointIndex: number;
+  waypoints: TVehiclePosition[];
+}
+
+type TMessageOption = "publish" | "subscribe" | "unsubscribe";
+
+interface TMessage {
+  data: object;
+  option: TMessageOption;
+  topic: string;
+}
+
+const port = 9090;
+const server = createServer({
+  cert: readFileSync(resolve(import.meta.dirname, "../../certificates/localhost-cert.pem")),
+  key: readFileSync(resolve(import.meta.dirname, "../../certificates/localhost-key.pem")),
+}).listen(port);
+
+const initialData: TVehicleData = {
+  autoPilot: false,
+  heading: 45,
+  latitude: 50.8084,
+  longitude: 14.8821,
+  speed: 5,
+  waypointIndex: 0,
+  waypoints: [],
 };
 
-const PORT = 9090;
-const TOPIC_CONTROL = "/control/command/control_cmd";
-const TOPIC_GPS = "/novatel/oem7/gps";
-const TOPIC_HEADING = "/novatel/oem7/heading2";
-const TOPIC_PATH = "/utm_path";
-
-const START: TLatLng = { lat: 50.8084, lng: 14.8821 };
-const WAYPOINTS: TLatLng[] = [];
+const vehicleData: TVehicleData = {
+  autoPilot: false,
+  heading: 45,
+  latitude: 50.8084,
+  longitude: 14.8821,
+  speed: 5,
+  waypointIndex: 0,
+  waypoints: [],
+};
 
 const SPEED_MPS = 5.0;
 const TICK_HZ = 5;
 const TICK_MS = 1000 / TICK_HZ;
-
-// Active mission. Starts as the demo WAYPOINTS, but gets replaced when the
-// app publishes a real mission via "Send to Vehicle" (/utm_path).
-let missionWaypoints = [...WAYPOINTS];
-
-const vehicle = {
-  autopilot: false,
-  heading: 45,
-  lat: START.lat,
-  lng: START.lng,
-  speed: 0,
-  wpIndex: 0,
-};
 
 const manualCmd = {
   lastSeen: 0,
@@ -43,76 +66,84 @@ const R = 6371000;
 const toRad = (d: number): number => (d * Math.PI) / 180;
 const toDeg = (r: number): number => (r * 180) / Math.PI;
 
-const distanceM = (a: TLatLng, b: TLatLng): number => {
-  const dLat = toRad(b.lat - a.lat);
-  const dLng = toRad(b.lng - a.lng);
-  const lat1 = toRad(a.lat);
-  const lat2 = toRad(b.lat);
+const distanceM = (a: TVehiclePosition, b: TVehiclePosition): number => {
+  const dLat = toRad(b.latitude - a.latitude);
+  const dLng = toRad(b.longitude - a.longitude);
+  const lat1 = toRad(a.latitude);
+  const lat2 = toRad(b.latitude);
   const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
 
   return 2 * R * Math.asin(Math.sqrt(h));
 };
 
-const bearingDeg = (a: TLatLng, b: TLatLng): number => {
-  const lat1 = toRad(a.lat);
-  const lat2 = toRad(b.lat);
-  const dLng = toRad(b.lng - a.lng);
+const bearingDeg = (a: TVehiclePosition, b: TVehiclePosition): number => {
+  const lat1 = toRad(a.latitude);
+  const lat2 = toRad(b.latitude);
+  const dLng = toRad(b.longitude - a.longitude);
   const y = Math.sin(dLng) * Math.cos(lat2);
   const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLng);
 
   return (toDeg(Math.atan2(y, x)) + 360) % 360;
 };
 
-const step = (from: TLatLng, to: TLatLng, meters: number): TLatLng => {
+const step = (from: TVehiclePosition, to: TVehiclePosition, meters: number): TVehiclePosition => {
   const d = distanceM(from, to);
 
   if (d <= meters || d === 0) return { ...to };
   const frac = meters / d;
 
   return {
-    lat: from.lat + (to.lat - from.lat) * frac,
-    lng: from.lng + (to.lng - from.lng) * frac,
+    latitude: from.latitude + (to.latitude - from.latitude) * frac,
+    longitude: from.longitude + (to.longitude - from.longitude) * frac,
   };
 };
 
-const projectByHeading = (from: TLatLng, headingDeg: number, meters: number): TLatLng => {
+const projectByHeading = (
+  from: TVehiclePosition,
+  headingDeg: number,
+  meters: number,
+): TVehiclePosition => {
   const dNorth = meters * Math.cos(toRad(headingDeg));
   const dEast = meters * Math.sin(toRad(headingDeg));
   const dLat = toDeg(dNorth / R);
-  const dLng = toDeg(dEast / (R * Math.cos(toRad(from.lat))));
+  const dLng = toDeg(dEast / (R * Math.cos(toRad(from.latitude))));
 
-  return { lat: from.lat + dLat, lng: from.lng + dLng };
+  return { latitude: from.latitude + dLat, longitude: from.longitude + dLng };
 };
 
-const wss = new WebSocketServer({ port: PORT });
+const wss = new WebSocketServer({
+  server,
+});
 const subscriptions = new Set();
 
-const send = (ws: WebSocket, obj: object): void => {
-  if (ws.readyState === ws.OPEN) ws.send(JSON.stringify(obj));
+const sendMessage = (ws: WebSocket, message: TMessage): void => {
+  if (ws.readyState === ws.OPEN) {
+    ws.send(JSON.stringify(message));
+  }
 };
 
 const publishGps = (ws: WebSocket): void => {
   if (!subscriptions.has(TOPIC_GPS)) return;
 
-  send(ws, {
-    msg: {
+  sendMessage(ws, {
+    data: {
       altitude: 400,
-      err: 0,
-      latitude: vehicle.lat,
-      longitude: vehicle.lng,
-      speed: vehicle.speed,
-      status: { satellites_used: 8, satellites_visible: 20 },
+      latitude: vehicleData.latitude,
+      longitude: vehicleData.longitude,
+      speed: vehicleData.speed,
+      status: { satellitesUsed: 8, satellitesVisible: 20 },
     },
-    op: "publish",
+    option: "publish",
     topic: TOPIC_GPS,
   });
 };
 
 const publishHeading = (ws: WebSocket): void => {
   if (!subscriptions.has(TOPIC_HEADING)) return;
-  send(ws, {
-    msg: { heading: vehicle.heading },
-    op: "publish",
+
+  sendMessage(ws, {
+    data: { heading: vehicleData.heading },
+    option: "publish",
     topic: TOPIC_HEADING,
   });
 };
@@ -120,43 +151,47 @@ const publishHeading = (ws: WebSocket): void => {
 wss.on("connection", (ws) => {
   console.info("Client connected (app)");
 
-  ws.on("message", (raw) => {
-    let m;
+  ws.on("message", (raw: WebSocket.RawData) => {
+    let message: TMessage;
 
     try {
-      m = JSON.parse(raw.toString());
+      message = JSON.parse(raw.toString());
     } catch {
       return;
     }
 
-    switch (m.op) {
+    switch (message.option) {
       case "subscribe":
-        subscriptions.add(m.topic);
-        console.info("subscribe:", m.topic);
-        if (m.topic === TOPIC_GPS) publishGps(ws);
-        if (m.topic === TOPIC_HEADING) publishHeading(ws);
+        subscriptions.add(message.topic);
+        console.info("subscribe:", message.topic);
+        if (message.topic === TOPIC_GPS) publishGps(ws);
+        if (message.topic === TOPIC_HEADING) publishHeading(ws);
         break;
 
       case "unsubscribe":
-        subscriptions.delete(m.topic);
-        break;
-
-      case "advertise":
-        console.info("advertise:", m.topic);
+        subscriptions.delete(message.topic);
         break;
 
       case "publish":
-        if (m.topic === TOPIC_CONTROL) {
-          const speed = m.msg?.longitudinal?.speed ?? 0;
-          const steer = m.msg?.lateral?.steering_tire_angle ?? 0;
+        if (message.topic === TOPIC_CONTROL) {
+          // const speed = message.msg?.longitudinal?.speed ?? 0;
+          // const steer = message.msg?.lateral?.steeringTireAngle ?? 0;
 
-          if (speed !== 0 || steer !== 0) vehicle.autopilot = false;
-          manualCmd.speed = speed;
-          manualCmd.steer = steer;
+          // if (speed !== 0 || steer !== 0) vehicleData.autoPilot = false;
+          // manualCmd.speed = speed;
+          // manualCmd.steer = steer;
           manualCmd.lastSeen = Date.now();
         }
 
-        if (m.topic === TOPIC_PATH) {
+        if (message.topic === TOPIC_PATH) {
+          // const poses: {
+          //   pose: {
+          //     position: {
+          //       x: number;
+          //       y: number;
+          //     };
+          //   };
+          // }[] = message.msg?.poses ?? [];
           const poses: {
             pose: {
               position: {
@@ -164,22 +199,22 @@ wss.on("connection", (ws) => {
                 y: number;
               };
             };
-          }[] = m.msg?.poses ?? [];
+          }[] = [];
+
           const mission = poses
-            .map((p) => ({
-              lat: p?.pose?.position?.x,
-              lng: p?.pose?.position?.y,
+            .map<TVehiclePosition>((p) => ({
+              latitude: p?.pose?.position?.x,
+              longitude: p?.pose?.position?.y,
             }))
-            .filter((wp) => Number.isFinite(wp.lat) && Number.isFinite(wp.lng));
+            .filter((wp) => Number.isFinite(wp.latitude) && Number.isFinite(wp.longitude));
 
           if (mission.length > 1) {
             const [start, ...rest] = mission;
 
-            vehicle.lat = start.lat;
-            vehicle.lng = start.lng;
-            missionWaypoints = rest;
-            vehicle.wpIndex = 0;
-            vehicle.autopilot = true;
+            vehicleData.latitude = start.latitude;
+            vehicleData.longitude = start.longitude;
+            vehicleData.waypoints = rest;
+            vehicleData.autoPilot = true;
             console.info(`Received mission: ${rest.length} waypoints -> driving`);
           }
         }
@@ -191,48 +226,54 @@ wss.on("connection", (ws) => {
   });
 
   const timer = setInterval(() => {
-    if (vehicle.autopilot && vehicle.wpIndex < missionWaypoints.length) {
-      const target = missionWaypoints[vehicle.wpIndex];
-      const here = { lat: vehicle.lat, lng: vehicle.lng };
+    if (vehicleData.autoPilot && vehicleData.waypointIndex < vehicleData.waypoints.length) {
+      const targetPosition: TVehiclePosition = vehicleData.waypoints[vehicleData.waypointIndex];
+      const currentPosition: TVehiclePosition = {
+        latitude: vehicleData.latitude,
+        longitude: vehicleData.longitude,
+      };
 
-      vehicle.heading = bearingDeg(here, target);
-      vehicle.speed = SPEED_MPS;
+      vehicleData.heading = bearingDeg(currentPosition, targetPosition);
+      vehicleData.speed = SPEED_MPS;
 
       const metersPerTick = SPEED_MPS / TICK_HZ;
-      const next = step(here, target, metersPerTick);
+      const nextPosition = step(currentPosition, targetPosition, metersPerTick);
 
-      vehicle.lat = next.lat;
-      vehicle.lng = next.lng;
+      vehicleData.latitude = nextPosition.latitude;
+      vehicleData.longitude = nextPosition.longitude;
 
-      if (distanceM(next, target) < 1) {
-        console.info(`Reached waypoint ${vehicle.wpIndex + 1}`);
-        vehicle.wpIndex += 1;
-        if (vehicle.wpIndex >= missionWaypoints.length) {
+      if (distanceM(nextPosition, targetPosition) < 1) {
+        console.info(`Reached waypoint ${vehicleData.waypointIndex + 1}`);
+        vehicleData.waypointIndex += 1;
+
+        if (vehicleData.waypointIndex >= vehicleData.waypoints.length) {
           console.info("Mission complete");
-          vehicle.speed = 0;
-          vehicle.autopilot = false;
+          vehicleData.speed = 0;
+          vehicleData.autoPilot = false;
         }
       }
-    } else if (!vehicle.autopilot) {
+    } else if (!vehicleData.autoPilot) {
       const fresh = Date.now() - manualCmd.lastSeen < MANUAL_TIMEOUT_MS;
       const speed = fresh ? manualCmd.speed : 0;
       const steer = fresh ? manualCmd.steer : 0;
 
       if (Math.abs(speed) > 0.01) {
-        vehicle.heading = (vehicle.heading + steer * STEER_GAIN * (1 / TICK_HZ) + 360) % 360;
+        vehicleData.heading =
+          (vehicleData.heading + steer * STEER_GAIN * (1 / TICK_HZ) + 360) % 360;
       }
-      vehicle.speed = speed;
+
+      vehicleData.speed = speed;
 
       if (Math.abs(speed) > 0.01) {
         const metersPerTick = speed / TICK_HZ;
-        const next = projectByHeading(
-          { lat: vehicle.lat, lng: vehicle.lng },
-          vehicle.heading,
+        const nextPosition = projectByHeading(
+          { latitude: vehicleData.latitude, longitude: vehicleData.longitude },
+          vehicleData.heading,
           metersPerTick,
         );
 
-        vehicle.lat = next.lat;
-        vehicle.lng = next.lng;
+        vehicleData.latitude = nextPosition.latitude;
+        vehicleData.longitude = nextPosition.longitude;
       }
     }
 
@@ -246,7 +287,9 @@ wss.on("connection", (ws) => {
   });
 });
 
-console.info(`RosBridge is listening on ws://localhost:${PORT}...`);
+console.log(server);
+
+console.info(`RosBridge is listening on wss://${server.address()?.toString()}:${port}...`);
 console.info("Commands:  a = engage autopilot, s = stop, r = reset to start");
 process.stdin.setRawMode?.(true);
 process.stdin.resume();
@@ -255,20 +298,20 @@ process.stdin.on("data", (buf) => {
   const k = buf.toString();
 
   if (k === "a") {
-    vehicle.autopilot = true;
-    vehicle.wpIndex = 0;
+    vehicleData.autoPilot = true;
+    vehicleData.waypointIndex = 0;
     console.info(">> autopilot engaged");
   } else if (k === "s") {
-    vehicle.autopilot = false;
-    vehicle.speed = 0;
+    vehicleData.autoPilot = false;
+    vehicleData.speed = 0;
     console.info(">> stopped");
   } else if (k === "r") {
-    vehicle.lat = START.lat;
-    vehicle.lng = START.lng;
-    vehicle.wpIndex = 0;
-    vehicle.autopilot = false;
-    vehicle.speed = 0;
-    missionWaypoints = [...WAYPOINTS];
+    vehicleData.latitude = initialData.latitude;
+    vehicleData.longitude = initialData.longitude;
+    vehicleData.waypointIndex = 0;
+    vehicleData.autoPilot = false;
+    vehicleData.speed = 0;
+    vehicleData.waypoints = [];
     console.info(">> reset");
   } else if (k === "\u0003") {
     process.exit(0);

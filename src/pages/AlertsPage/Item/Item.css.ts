@@ -1,3 +1,5 @@
+import { calc } from "@vanilla-extract/css-utils";
+
 import { css } from "@/theme";
 
 export const wrapperClass = css(({ colors, devices, fonts }) => ({
@@ -55,8 +57,8 @@ export const descriptionClass = css(({ devices, fonts }) => ({
 
   "@media": {
     [devices.mobile]: {
-      flex: "0 1 calc(50% - 10px)",
-      maxWidth: "calc(50% - 10px)",
+      flex: `0 1 ${calc("50%").subtract("10px")}`,
+      maxWidth: `${calc("50%").subtract("10px")}`,
       whiteSpace: "normal",
     },
   },
@@ -64,7 +66,6 @@ export const descriptionClass = css(({ devices, fonts }) => ({
 
 export const contentClass = css(({ devices }) => ({
   flex: "0 1 150px",
-
   selectors: {
     "&:nth-of-type(odd)": {
       "@media": {
@@ -77,7 +78,7 @@ export const contentClass = css(({ devices }) => ({
 
   "@media": {
     [devices.mobile]: {
-      flex: "calc(50% - 10px)",
+      flex: `${calc("50%").subtract("10px")}`,
     },
   },
 }));

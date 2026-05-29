@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import { useDestinations } from "@/hooks";
+import { useDestination } from "@/hooks";
 import { Icon } from "@/ui";
 
 import { layoutClass, overlayClass, headingClass, closeClass } from "./Modal.css";
@@ -8,14 +8,10 @@ import { layoutClass, overlayClass, headingClass, closeClass } from "./Modal.css
 import type { TProps } from "./Modal.types";
 
 const Modal: React.FC<TProps> = ({ children, onClose }) => {
-  const { id } = useDestinations();
+  const { id } = useDestination();
 
-  const handleModalClose = (): void => {
-    onClose();
-  };
-
-  const handleEscPress = (event: KeyboardEvent): void => {
-    if (event.key === "Escape") {
+  const handleEscPress = ({ key }: KeyboardEvent): void => {
+    if (key === "Escape") {
       onClose();
     }
   };
@@ -35,7 +31,7 @@ const Modal: React.FC<TProps> = ({ children, onClose }) => {
           ID: {id}
           <button
             className={closeClass}
-            onClick={handleModalClose}
+            onClick={onClose}
             type="button"
           >
             <Icon id="close" />
@@ -47,7 +43,7 @@ const Modal: React.FC<TProps> = ({ children, onClose }) => {
 
       <div
         className={overlayClass}
-        onClick={handleModalClose}
+        onClick={onClose}
       />
     </>
   );

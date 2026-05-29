@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useDestinations } from "@/hooks";
+import { useDestination } from "@/hooks";
 
 import { Actions } from "./Actions";
 import { Create } from "./Create";
@@ -10,7 +10,7 @@ import { Waypoints } from "./Waypoints";
 import { wrapperClass, layoutClass } from "./Mission.css";
 
 const Mission: React.FC = () => {
-  const { positions } = useDestinations();
+  const { positions } = useDestination();
 
   return (
     <div className={wrapperClass}>

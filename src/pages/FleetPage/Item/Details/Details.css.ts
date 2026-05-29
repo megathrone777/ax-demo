@@ -1,3 +1,5 @@
+import { calc } from "@vanilla-extract/css-utils";
+
 import { css } from "@/theme";
 
 export const wrapperClass = css({
@@ -6,7 +8,7 @@ export const wrapperClass = css({
 
 export const tableClass = css({
   borderCollapse: "collapse",
-  height: "calc(100% + 2px)",
+  height: `${calc("100%").add("2px")}`,
   marginTop: -1,
   width: "100%",
 });
@@ -45,6 +47,7 @@ export const cellClass = css(({ colors, devices, fonts }) => ({
       fontSize: 15,
       paddingInline: 5,
     },
+
     [devices.mobile]: {
       fontSize: 14,
       paddingBlock: 5,
@@ -54,7 +57,6 @@ export const cellClass = css(({ colors, devices, fonts }) => ({
 
 export const rowClass = css(({ devices }) => ({
   height: 38,
-
   selectors: {
     "&:last-of-type td:first-of-type &": {
       borderBottomLeftRadius: 4,
@@ -102,8 +104,7 @@ export const ipErrorClass = css(({ colors }) => ({
   bottom: 0,
   color: colors.red,
   fontSize: 10,
-  left: 0,
+  insetInline: 0,
   position: "absolute",
-  right: 0,
   textAlign: "center",
 }));

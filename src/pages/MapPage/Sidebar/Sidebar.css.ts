@@ -1,3 +1,5 @@
+import { calc } from "@vanilla-extract/css-utils";
+
 import { css } from "@/theme";
 
 export const wrapperClass = css(({ colors, devices, easing }) => ({
@@ -6,7 +8,7 @@ export const wrapperClass = css(({ colors, devices, easing }) => ({
   flexBasis: 400,
   height: "100%",
   overflow: "hidden",
-  transition: `flex-basis 0.15s ${easing.default}`,
+  transition: `flex-basis 150ms ${easing.default}`,
 
   "@media": {
     [devices.desktop]: {
@@ -38,7 +40,7 @@ export const layoutClass = css(({ devices }) => ({
 export const burgerWrapperClass = css(({ devices }) => ({
   display: "none",
   position: "absolute",
-  right: "calc(100% + 8px)",
+  right: `${calc("100%").add("8px")}`,
 
   "@media": {
     [devices.tablet]: {

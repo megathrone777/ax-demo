@@ -1,4 +1,5 @@
 import { keyframes } from "@vanilla-extract/css";
+import { calc } from "@vanilla-extract/css-utils";
 
 import { css } from "@/theme";
 
@@ -10,18 +11,16 @@ const slide = keyframes({
 
 export const wrapperClass = css(({ colors, devices }) => ({
   backgroundColor: colors.black,
-  bottom: 0,
   display: "flex",
   flex: "0 1 400px",
   flexDirection: "column",
+  insetBlock: 0,
   padding: "20px 8px 8px 0",
   position: "absolute",
   right: 0,
-  top: 0,
   transform: "translate3d(var(--sidebar-x, 400px), 0, 0)",
-  transition: "transform 0.1s linear",
+  transition: "transform 100ms linear",
   width: 400,
-  willChange: "transform",
   zIndex: 3,
 
   "@media": {
@@ -31,6 +30,7 @@ export const wrapperClass = css(({ colors, devices }) => ({
       transform: "translate3d(var(--sidebar-x-sm, 300px), 0, 0)",
       width: 300,
     },
+
     [devices.mobile]: {
       paddingLeft: 5,
     },
@@ -63,7 +63,7 @@ export const layoutClass = css(({ devices }) => ({
 }));
 
 export const arrowsIconClass = css({
-  animationDuration: "2s",
+  animationDuration: "2000ms",
   animationIterationCount: "infinite",
   animationName: slide,
   animationTimingFunction: "linear",
@@ -74,13 +74,14 @@ export const arrowsIconClass = css({
 
 export const burgerWrapperClass = css(({ devices }) => ({
   position: "absolute",
-  right: "calc(100% + 15px)",
+  right: `${calc("100%").add("15px")}`,
   top: 60,
 
   "@media": {
     [devices.desktop]: {
       top: 50,
     },
+
     [devices.mobile]: {
       top: 5,
     },

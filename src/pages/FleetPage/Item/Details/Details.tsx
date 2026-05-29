@@ -17,7 +17,7 @@ import {
 
 import type { TProps } from "./Details.types";
 
-const Details: React.FC<TProps> = ({ id, position: { lat, lon } }) => {
+const Details: React.FC<TProps> = ({ id, position: { latitude, longitude } }) => {
   const ros = useRos();
   const { actions, store } = useAppContext();
   const [ipAddress, setIPAddress] = useState<string>(store.currentIP);
@@ -67,9 +67,9 @@ const Details: React.FC<TProps> = ({ id, position: { lat, lon } }) => {
             <td className={cellClass}>current position</td>
 
             <td className={cellClass}>
-              LAT: {lat.toFixed(4)}
+              LAT: {latitude.toFixed(4)}
               <br />
-              LON: {lon.toFixed(4)}
+              LON: {longitude.toFixed(4)}
               <br />
               ALT: 12.345
             </td>

@@ -20,7 +20,7 @@ export const wrapperClass = css(({ devices }) => ({
 export const listClass = css(({ devices }) => ({
   display: "flex",
   flexDirection: "column",
-  height: "calc(100% - 16px)",
+  height: `${calc("100%").subtract("16px")}`,
   overflowY: "scroll",
   paddingInline: 8,
   rowGap: 8,

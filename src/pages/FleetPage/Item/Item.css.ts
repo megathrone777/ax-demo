@@ -1,3 +1,5 @@
+import { calc } from "@vanilla-extract/css-utils";
+
 import { css } from "@/theme";
 
 export const wrapperClass = css(({ devices }) => ({
@@ -11,10 +13,12 @@ export const wrapperClass = css(({ devices }) => ({
     [devices.desktop]: {
       columnGap: 5,
     },
+
     [devices.tablet]: {
       flexFlow: "row wrap",
       rowGap: 5,
     },
+
     [devices.mobile]: {
       flexFlow: "column nowrap",
     },
@@ -30,26 +34,19 @@ export const columnClass = css(({ colors, devices }) => ({
   height: 250,
   overflow: "hidden",
 
-  selectors: {
-    "&:first-of-type": {
-      "@media": {
-        [devices.tablet]: {
-          flex: "0 1 100%",
-        },
-        [devices.mobile]: {
-          flex: "none",
-        },
-      },
-    },
-  },
-
   "@media": {
     [devices.desktop]: {
       height: 180,
     },
+
     [devices.tablet]: {
-      flex: "0 1 calc(50% - 2.5px)",
+      flex: `0 1 ${calc("50%").subtract("3px")}`,
+
+      ":first-of-type": {
+        flex: "0 1 100%",
+      },
     },
+
     [devices.mobile]: {
       flex: "none",
       height: "auto",
@@ -75,6 +72,7 @@ export const optionsClass = css(({ devices }) => ({
       columnGap: 15,
       paddingInline: 5,
     },
+
     [devices.mobile]: {
       columnGap: 5,
       paddingBlock: 5,

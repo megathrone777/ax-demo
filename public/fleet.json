@@ -1,26 +1,22 @@
 [
   {
     "active": true,
-    "data": {
-      "control_mode": -1,
-      "gear_status": -1,
-      "id": 1,
-      "ip_addr": "192.168.0.165",
-      "position": { "lat": 50.808406829833984, "lon": 14.882061004638672 },
-      "vehicle_status": { "speed": 0.0, "steer": -0.0 }
-    },
-    "id": 1
+    "controlMode": -1,
+    "gearStatus": -1,
+    "id": 1,
+    "ipAddres": "192.168.0.165",
+    "position": { "latitude": 50.808406829833984, "longitude": 14.882061004638672 },
+    "speed": 0.0,
+    "steer": -0.0
   },
   {
     "active": false,
-    "data": {
-      "control_mode": -1,
-      "gear_status": -1,
-      "id": 2,
-      "ip_addr": "192.168.0.235",
-      "position": { "lat": 50.808406829833984, "lon": 14.882061004638672 },
-      "vehicle_status": { "speed": 0.0, "steer": -0.0 }
-    },
-    "id": 2
+    "controlMode": -1,
+    "gearStatus": -1,
+    "id": 2,
+    "ipAddres": "192.168.0.235",
+    "position": { "latitude": 50.808406829833984, "longitude": 14.882061004638672 },
+    "speed": 0.0,
+    "steer": -0.0
   }
 ]

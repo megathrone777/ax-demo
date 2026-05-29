@@ -1,4 +1,5 @@
 import { keyframes } from "@vanilla-extract/css";
+import { calc } from "@vanilla-extract/css-utils";
 
 import { css, cssVariant, globalStyle } from "@/theme";
 
@@ -25,7 +26,7 @@ const wave = keyframes({
 export const tooltipClass = css(({ colors }) => ({
   backgroundColor: colors.blackDarker,
   borderRadius: 5,
-  bottom: "calc(50% + 15px)",
+  bottom: `${calc("50%").add("15px")}`,
   color: colors.orange,
   display: "inline-flex",
   flexDirection: "column",

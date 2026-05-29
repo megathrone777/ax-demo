@@ -6,9 +6,9 @@ const useMapFit = (mapId: TMapId) => {
 
   return (vehicles: TVehicle[]): void => {
     const bounds: LngLatBounds = new LngLatBounds();
-    const coordinates: number[][] = vehicles.flatMap(({ position: { lat, lon } }): number[][] => [
-      [lon, lat],
-    ]);
+    const coordinates: number[][] = vehicles.flatMap(
+      ({ position: { latitude, longitude } }): number[][] => [[longitude, latitude]],
+    );
 
     for (const coordinate of coordinates) {
       bounds.extend(new LngLat(coordinate[0]!, coordinate[1]!));

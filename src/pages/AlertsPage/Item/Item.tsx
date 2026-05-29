@@ -34,7 +34,7 @@ const Item: React.FC<TProps> = ({ description, time, type }) => {
 
   useEffect((): void => {
     const coordinates: number[][] = vehicles.map(
-      ({ position: { lat, lon } }): [number, number] => [lon, lat],
+      ({ position: { latitude, longitude } }): [number, number] => [longitude, latitude],
     );
     const bounds: BBox = bbox(lineString(coordinates));
 

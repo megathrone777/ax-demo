@@ -22,11 +22,13 @@ const DrawControl: React.FC<TProps> = ({
   position,
 }) => {
   const draw = useControl<MapboxDrawControl>(
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     () => {
       const modes: MapboxDrawOptions["modes"] = enable(
         {
           ...MapboxDraw.modes,
-          [MapboxDraw.constants["modes"]["DIRECT_SELECT"]]: DirectSelectMode,
+          [MapboxDraw.constants.modes.DIRECT_SELECT]: DirectSelectMode,
         },
         (): boolean => false,
       );
@@ -35,17 +37,17 @@ const DrawControl: React.FC<TProps> = ({
         boxSelect: true,
         clickBuffer: 10,
         controls: {
-          line_string: true,
+          [MapboxDraw.constants.types.LINE]: true,
           polygon: true,
         },
-        defaultMode: MapboxDraw.constants["modes"]["SIMPLE_SELECT"],
+        defaultMode: MapboxDraw.constants.modes.SIMPLE_SELECT,
         displayControlsDefault: false,
         keybindings: true,
         modes,
         styles,
         touchBuffer: 30,
         touchEnabled: true,
-      }) as unknown as MapboxDrawControl;
+      });
     },
 
     ({ map }: { map: MapRef }): void => {
@@ -76,8 +78,6 @@ const DrawControl: React.FC<TProps> = ({
       if (line && line.geometry.type === "LineString") {
         const { geometry } = line;
 
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         draw.changeMode("draw_line_string", {
           featureId: `line-string-${id}`,
           from: geometry.coordinates[geometry.coordinates.length - 1],

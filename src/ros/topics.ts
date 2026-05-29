@@ -1,8 +1,23 @@
+export const TOPIC_CONTROL = "control";
+export const TOPIC_GPS = "gps";
+export const TOPIC_HEADING = "heading";
+export const TOPIC_PATH = "path";
+
 import type { UseSubscriptionProps } from "rosreact";
 
-type TData = Partial<{ heading: number } | TGPSData>;
+export interface Topics {
+  CONTROL: UseSubscriptionProps;
+  GPS: UseSubscriptionProps<TGPSData>;
+  HEADING: UseSubscriptionProps<THeadingData>;
+  PATH: UseSubscriptionProps;
+}
 
-const topics: Record<"GPS" | "HEADING" | "JOYSTICK" | "PATH", UseSubscriptionProps<TData>> = {
+const topics: Topics = {
+  CONTROL: {
+    messageType: TOPIC_CONTROL + "/data",
+    topic: TOPIC_CONTROL,
+  },
+
   GPS: {
     compareFunc: (currentMessage, incomingMessage): boolean => {
       if (
@@ -26,7 +41,6 @@ const topics: Record<"GPS" | "HEADING" | "JOYSTICK" | "PATH", UseSubscriptionPro
 
     messageInitialValue: {
       altitude: 400,
-      err: 0,
       latitude: 50.808406829833984,
       longitude: 14.882061004638672,
       speed: 0,
@@ -35,25 +49,19 @@ const topics: Record<"GPS" | "HEADING" | "JOYSTICK" | "PATH", UseSubscriptionPro
         satellitesVisible: 20,
       },
     },
-
-    messageType: "gps_msgs/msg/GPSFix",
-    topic: "/novatel/oem7/gps",
+    messageType: TOPIC_GPS + "/data",
+    topic: TOPIC_GPS,
   },
 
   HEADING: {
     messageInitialValue: { heading: 45 },
-    messageType: "novatel_oem7_msgs/msg/HEADING2",
-    topic: "/novatel/oem7/heading2",
-  },
-
-  JOYSTICK: {
-    messageType: "autoware_auto_control_msgs/msg/AckermannControlCommand",
-    topic: "/control/command/control_cmd",
+    messageType: TOPIC_HEADING + "/data",
+    topic: TOPIC_HEADING,
   },
 
   PATH: {
-    messageType: "nav_msgs/msg/Path",
-    topic: "/utm_path",
+    messageType: TOPIC_PATH + "/data",
+    topic: TOPIC_PATH,
   },
 };
 

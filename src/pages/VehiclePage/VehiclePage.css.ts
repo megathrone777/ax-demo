@@ -1,3 +1,5 @@
+import { calc } from "@vanilla-extract/css-utils";
+
 import { css } from "@/theme";
 
 export const wrapperClass = css(({ devices }) => ({
@@ -24,7 +26,7 @@ export const wrapperClass = css(({ devices }) => ({
     },
 
     [devices.mobile]: {
-      height: "calc(100% - 55px)",
+      height: `${calc("100%").subtract("55px")}`,
       paddingBottom: 0,
     },
   },

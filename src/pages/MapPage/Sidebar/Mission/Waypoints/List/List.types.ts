@@ -1,14 +1,10 @@
-import type { useDestinations } from "@/hooks";
-
+import type React from "react";
 import type { DraggableProvided } from "@hello-pangea/dnd";
-
-export type TPositions = ReturnType<typeof useDestinations>["positions"];
-export type TRowProps = { id: number; positions: TPositions };
 
 export type TDraggableItemProps = {
   index: number;
   isDragging: boolean;
-  item: TPositions[0];
+  item: TDestinationPosition;
   provided: DraggableProvided;
   style: React.CSSProperties;
 };

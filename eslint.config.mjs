@@ -166,7 +166,7 @@ const config = defineConfig({
     "@typescript-eslint/naming-convention": [
       "error",
       { format: ["camelCase", "PascalCase"], selector: "property" },
-      { filter: { match: true, regex: "^[@&:]" }, format: null, selector: "property" },
+      { filter: { match: true, regex: "^[@&:APP_]" }, format: null, selector: "property" },
       { format: null, modifiers: ["requiresQuotes"], selector: "property" },
     ],
     "@typescript-eslint/explicit-function-return-type": "error",

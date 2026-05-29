@@ -4,19 +4,19 @@ import { Marker } from "@vis.gl/react-maplibre";
 import { useRos, useSubscription } from "rosreact";
 
 import { Distances, Lines, Markers, Polygons } from "@/components";
-import { useBoundaries, useDestinations, useMapLocate } from "@/hooks";
+import { useBoundary, useDestination, useMapLocate } from "@/hooks";
 import { topics } from "@/ros";
 import { MarkerWave } from "@/ui";
 
 const Waypoints: React.FC = () => {
-  const locatePoint = useMapLocate("controlsMap");
   const { id } = useParams();
-  const [enabled, toggleEnabled] = useState<boolean>();
   const { isConnected } = useRos();
   const { heading: angle } = useSubscription(topics.HEADING) as { heading: number };
   const { latitude, longitude, speed } = useSubscription(topics.GPS) as TGPSData;
-  const { polygons } = useBoundaries();
-  const { positions } = useDestinations();
+  const [enabled, toggleEnabled] = useState<boolean>();
+  const { polygons } = useBoundary();
+  const { positions } = useDestination();
+  const locatePoint = useMapLocate("controlsMap");
 
   const handleMapUpdate = (): void => {
     locatePoint([longitude, latitude]);

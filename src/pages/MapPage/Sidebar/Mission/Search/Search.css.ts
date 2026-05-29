@@ -1,6 +1,6 @@
-import { css } from "@/theme";
+import { calc } from "@vanilla-extract/css-utils";
 
-export const wrapperClass = css({});
+import { css } from "@/theme";
 
 export const resultsClass = css(({ colors }) => ({
   backgroundColor: colors.blackDarker,
@@ -9,7 +9,7 @@ export const resultsClass = css(({ colors }) => ({
   maxWidth: "100%",
   minWidth: 200,
   position: "absolute",
-  right: "calc(100% + 8px)",
+  right: `${calc("100%").add("8px")}`,
   zIndex: 1000,
 }));
 

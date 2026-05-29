@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { NavigationControl, ScaleControl } from "@vis.gl/react-maplibre";
 
-import { useDestinations } from "@/hooks";
+import { useDestination } from "@/hooks";
 
 import { DrawSwitcher } from "./DrawSwitcher";
 import { LocateControls } from "./LocateControls";
@@ -9,7 +9,7 @@ import { SatelliteSwitcher } from "./SatelliteSwitcher";
 import { TerrainSwitcher } from "./TerrainSwitcher";
 
 const Controls: React.FC = () => {
-  const { id, name, positions } = useDestinations();
+  const { id, name, positions } = useDestination();
 
   const renderControls = useMemo((): null | React.ReactElement => {
     if (id) {

@@ -3,7 +3,7 @@ import { lineString } from "@turf/helpers";
 import lineLength from "@turf/length";
 import { useSubscription } from "rosreact";
 
-import { useDestinations } from "@/hooks";
+import { useDestination } from "@/hooks";
 import { topics } from "@/ros";
 
 import { wrapperClass, rowClass, cellClass, labelClass, valueClass, keyClass } from "./Stats.css";
@@ -11,13 +11,13 @@ import { wrapperClass, rowClass, cellClass, labelClass, valueClass, keyClass } f
 import type { Position } from "geojson";
 
 const Stats: React.FC = () => {
-  const { positions } = useDestinations();
+  const { positions } = useDestination();
   const {
     altitude,
     latitude,
     longitude,
     speed,
-    status: { satellites_used, satellites_visible },
+    status: { satellitesUsed, satellitesVisible },
   } = useSubscription(topics.GPS) as TGPSData;
 
   const getTotalDistance = (): number => {
@@ -45,16 +45,14 @@ const Stats: React.FC = () => {
     <div className={wrapperClass}>
       <div className={rowClass}>
         <div className={cellClass}>
-          <>
-            <p className={labelClass}>Status</p>
-            <p className={valueClass}>{renderTotalDistance()}</p>
-          </>
+          <p className={labelClass}>Status</p>
+          <p className={valueClass}>{renderTotalDistance()}</p>
         </div>
 
         <div className={cellClass}>
           <p className={valueClass}>
             <span className={keyClass}>Network:</span>
-            {satellites_used}/{satellites_visible}
+            {satellitesUsed}/{satellitesVisible}
           </p>
         </div>
       </div>

@@ -57,9 +57,9 @@ const Properties: React.FC<TProps> = ({ id, ipAddres, position }) => {
             <td className={cellClass}>current position</td>
 
             <td className={cellClass}>
-              LAT: {position.lat.toFixed(4)}
+              LAT: {position.latitude.toFixed(4)}
               <br />
-              LON: {position.lon.toFixed(4)}
+              LON: {position.longitude.toFixed(4)}
               <br />
               ALT: 12.345
             </td>

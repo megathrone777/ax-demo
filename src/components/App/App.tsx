@@ -1,9 +1,10 @@
 import React from "react";
-import { createBrowserRouter, RouterProvider } from "react-router";
+import { createBrowserRouter } from "react-router";
+import { RouterProvider } from "react-router/dom";
 import { MapProvider } from "@vis.gl/react-maplibre";
+import { RosConnection } from "rosreact";
 
 import { getVehicles, getVehicleDetails, loginAction } from "@/api";
-import { Error, Layout } from "@/components";
 import { AppProvider } from "@/context";
 import {
   AlertsPage,
@@ -14,9 +15,13 @@ import {
   RegistrationPage,
   VehiclePage,
 } from "@/pages";
+import { Spinner } from "@/ui";
 
-const App: React.FC = () => {
-  const router = createBrowserRouter([
+import { Error } from "./Error";
+import { Layout } from "./Layout";
+
+const router = createBrowserRouter(
+  [
     {
       children: [
         {
@@ -33,7 +38,6 @@ const App: React.FC = () => {
           loader: getVehicles,
           path: "alerts",
         },
-
         {
           Component: FleetPage,
           loader: getVehicles,
@@ -55,6 +59,7 @@ const App: React.FC = () => {
         },
       ],
       Component: Layout,
+      hydrateFallbackElement: <Spinner />,
       path: "/",
     },
 
@@ -67,15 +72,18 @@ const App: React.FC = () => {
       Component: RegistrationPage,
       path: "/registration",
     },
-  ]);
+  ],
+  {},
+);
 
-  return (
+const App: React.FC = () => (
+  <RosConnection url={`wss://${import.meta.env.APP_ROS_IP}:9090`}>
     <MapProvider>
       <AppProvider>
         <RouterProvider {...{ router }} />
       </AppProvider>
     </MapProvider>
-  );
-};
+  </RosConnection>
+);
 
 export { App };

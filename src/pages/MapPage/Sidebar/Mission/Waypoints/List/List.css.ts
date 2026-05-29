@@ -1,29 +1,40 @@
-import { css } from "@/theme";
+import { cssVariant } from "@/theme";
 
-export const itemClass = css(({ colors, devices }) => ({
-  alignItems: "center",
-  border: "1px solid transparent",
-  boxSizing: "border-box",
-  columnGap: 20,
-  display: "flex",
-  lineHeight: "40px",
-  paddingInline: 5,
-  selectors: {
-    "&.is-dragging": {
+export const itemClass = cssVariant(
+  ({ colors }) => ({
+    default: {
+      borderColor: "transparent",
+    },
+
+    dragging: {
       borderColor: colors.green,
       boxShadow: `0 0 2px rgb(8, 58, 30), 0 0 5px ${colors.green}`,
     },
-  },
-  userSelect: "none",
+  }),
 
-  ":last-of-type": {
-    borderBottomColor: "transparent",
-  },
+  (variant, { devices }) => [
+    {
+      alignItems: "center",
+      borderStyle: "solid",
+      borderWidth: 1,
+      boxSizing: "border-box",
+      columnGap: 20,
+      display: "flex",
+      lineHeight: "40px",
+      paddingInline: 5,
+      userSelect: "none",
 
-  "@media": {
-    [devices.desktop]: {
-      columnGap: 10,
-      fontSize: 15,
+      ":last-of-type": {
+        borderBottomColor: "transparent",
+      },
+
+      "@media": {
+        [devices.desktop]: {
+          columnGap: 10,
+          fontSize: 15,
+        },
+      },
     },
-  },
-}));
+    variant,
+  ],
+);

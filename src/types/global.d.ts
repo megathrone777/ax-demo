@@ -4,8 +4,8 @@ declare global {
   type TMapId = "controlsMap" | "mainMap";
 
   interface TVehiclePosition {
-    lat: number;
-    lon: number;
+    latitude: number;
+    longitude: number;
   }
 
   interface TVehicle {
@@ -43,16 +43,17 @@ declare global {
     title: string;
   }
 
-  interface TGPSData {
+  interface TGPSData extends TVehiclePosition {
     altitude: number;
-    err: number;
-    latitude: number;
-    longitude: number;
     speed: number;
     status: {
       satellitesUsed: number;
       satellitesVisible: number;
     };
+  }
+
+  interface THeadingData {
+    heading: number;
   }
 
   type TDestinationDelay = "0" | "1" | "120" | "30" | "60";

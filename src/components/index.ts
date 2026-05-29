@@ -1,9 +1,7 @@
 export { App } from "./App";
 export { Distances } from "./Distances";
-export { Error } from "./Error";
 export { Geocoder } from "./Geocoder";
 export { Header } from "./Header";
-export { Layout } from "./Layout";
 export { Lines } from "./Lines";
 export { Markers } from "./Markers";
 export { Modal } from "./Modal";

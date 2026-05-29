@@ -11,6 +11,7 @@ import type {
   DraggableProvided,
   DraggableProvidedDraggableProps,
   DraggableStateSnapshot,
+  DroppableProvided,
   OnDragEndResponder,
 } from "@hello-pangea/dnd";
 import type { TDraggableItemProps } from "./List.types";
@@ -36,7 +37,7 @@ const DraggableItem: React.FC<TDraggableItemProps> = ({
   <div
     {...draggableProps}
     {...dragHandleProps}
-    className={`${itemClass}${isDragging ? " is-dragging" : ""}`}
+    className={itemClass[isDragging ? "dragging" : "default"]}
     ref={innerRef}
     style={getStyle({ draggableProps, style })}
   >
@@ -54,6 +55,7 @@ const List: React.FC = () => {
 
   const handleDragEnd: OnDragEndResponder = ({ destination, source }): void => {
     if (!destination) return;
+
     actions.swapDestinations({
       endIndex: destination.index,
       id,
@@ -70,25 +72,28 @@ const List: React.FC = () => {
         droppableId={`${id}-droppable`}
         key={`${id}-droppable`}
       >
-        {(provided): React.ReactElement<HTMLElement> => (
+        {({
+          droppableProps,
+          innerRef,
+          placeholder,
+        }: DroppableProvided): React.ReactElement<HTMLElement> => (
           <div
-            ref={provided.innerRef}
+            ref={innerRef}
             style={{ maxHeight: 160, overflowY: "auto" }}
-            {...provided.droppableProps}
+            {...droppableProps}
           >
-            {positions.map((item, index) => {
+            {positions.map<React.ReactElement>((item: TDestinationPosition, index: number) => {
               const key = `${item.geometry.coordinates[0]}-${item.geometry.coordinates[1]}`;
 
               return (
                 <Draggable
-                  draggableId={key}
-                  index={index}
                   key={key}
+                  {...{ index }}
+                  draggableId={key}
                 >
                   {(dragProvided: DraggableProvided, { isDragging }: DraggableStateSnapshot) => (
                     <DraggableItem
-                      isDragging={isDragging}
-                      item={item}
+                      {...{ isDragging, item }}
                       provided={dragProvided}
                       style={{}}
                       {...{ index }}
@@ -97,7 +102,8 @@ const List: React.FC = () => {
                 </Draggable>
               );
             })}
-            {provided.placeholder}
+
+            {placeholder}
           </div>
         )}
       </Droppable>

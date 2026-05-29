@@ -3,8 +3,6 @@ export interface TModals {
   save: boolean;
 }
 
-export interface TProps {
+export interface TProps extends TVehiclePosition {
   index: number;
-  latitude: number;
-  longitude: number;
 }

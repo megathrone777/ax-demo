@@ -1,24 +1,17 @@
 import React, { useCallback, useEffect, useState } from "react";
 
-import { useDestinations, useMapLocate } from "@/hooks";
-import { Icon } from "@/ui";
+import { useDestination, useMapLocate } from "@/hooks";
+import { Icon, Input } from "@/ui";
 
-import {
-  wrapperClass,
-  layoutClass,
-  resultsClass,
-  listClass,
-  itemClass,
-  clearClass,
-} from "./Search.css";
+import { layoutClass, resultsClass, listClass, itemClass, clearClass } from "./Search.css";
 
 import type { Position } from "geojson";
 
 const Search: React.FC = () => {
+  const { positions } = useDestination();
   const [inputValue, setInputValue] = useState<string>("");
-  const { positions } = useDestinations();
-  const locatePoint = useMapLocate("mainMap");
   const [suggestions, setSuggestions] = useState<TSuggestion[]>([]);
+  const locatePoint = useMapLocate("mainMap");
 
   const handleSuggestionClick = useCallback(
     (center: Position): void => {
@@ -27,9 +20,9 @@ const Search: React.FC = () => {
     [suggestions],
   );
 
-  // const handleInputChange = ({ currentTarget }: React.SyntheticEvent<HTMLInputElement>): void => {
-  //   setInputValue(currentTarget.value);
-  // };
+  const handleInputChange = ({ currentTarget }: React.SyntheticEvent<HTMLInputElement>): void => {
+    setInputValue(currentTarget.value);
+  };
 
   const handleResultsClear = (): void => {
     setInputValue("");
@@ -56,15 +49,15 @@ const Search: React.FC = () => {
   }, [inputValue]);
 
   return (
-    <div className={wrapperClass}>
+    <div>
       <div className={layoutClass}>
-        {/* <Input
+        <Input
           onChange={handleInputChange}
           placeholder="Search location..."
           template="secondary"
           type="text"
           value={inputValue}
-        /> */}
+        />
 
         {inputValue.length > 0 && (
           <button

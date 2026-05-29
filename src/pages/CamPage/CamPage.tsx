@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+// import { calc } from "@vanilla-extract/css-utils";
 
 import { useResize } from "@/hooks";
 
@@ -25,12 +26,10 @@ const CamPage: React.FC = () => {
     <div className={wrapperClass}>
       <div
         className={layoutClass}
-        style={
-          {
-            "--layout-width": !sidebarIsCollapsed ? "calc(100% - 400px)" : "100%",
-            "--layout-width-sm": !sidebarIsCollapsed ? "calc(100% - 300px)" : "100%",
-          } as React.CSSProperties
-        }
+        // style={{ TODO?
+        //   "--layout-width": !sidebarIsCollapsed ? `${calc("100%").subtract("400px")}` : "100%",
+        //   "--layout-width-sm": !sidebarIsCollapsed ? `${calc("100%").subtract("300px")}` : "100%",
+        // }}
       >
         <div className={columnClass}>
           <Coords />
