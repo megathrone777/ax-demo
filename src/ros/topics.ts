@@ -1,21 +1,13 @@
-export const TOPIC_CONTROL = "control";
-export const TOPIC_GPS = "gps";
-export const TOPIC_HEADING = "heading";
-export const TOPIC_PATH = "path";
+import { TopicsTypes } from "./ros.types";
 
 import type { UseSubscriptionProps } from "rosreact";
 
-export interface Topics {
-  CONTROL: UseSubscriptionProps;
-  GPS: UseSubscriptionProps<TGPSData>;
-  HEADING: UseSubscriptionProps<THeadingData>;
-  PATH: UseSubscriptionProps;
-}
+export type Topics = Record<TopicsTypes, UseSubscriptionProps>;
 
 const topics: Topics = {
   CONTROL: {
-    messageType: TOPIC_CONTROL + "/data",
-    topic: TOPIC_CONTROL,
+    messageType: TopicsTypes.CONTROL + "/data",
+    topic: TopicsTypes.CONTROL,
   },
 
   GPS: {
@@ -49,19 +41,19 @@ const topics: Topics = {
         satellitesVisible: 20,
       },
     },
-    messageType: TOPIC_GPS + "/data",
-    topic: TOPIC_GPS,
+    messageType: TopicsTypes.GPS + "/data",
+    topic: TopicsTypes.GPS,
   },
 
   HEADING: {
     messageInitialValue: { heading: 45 },
-    messageType: TOPIC_HEADING + "/data",
-    topic: TOPIC_HEADING,
+    messageType: TopicsTypes.HEADING + "/data",
+    topic: TopicsTypes.HEADING,
   },
 
   PATH: {
-    messageType: TOPIC_PATH + "/data",
-    topic: TOPIC_PATH,
+    messageType: TopicsTypes.PATH + "/data",
+    topic: TopicsTypes.PATH,
   },
 };
 

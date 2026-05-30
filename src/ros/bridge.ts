@@ -4,25 +4,7 @@ import { resolve } from "path";
 
 import { WebSocketServer, type WebSocket } from "ws";
 
-export const TOPIC_CONTROL = "control";
-export const TOPIC_GPS = "gps";
-export const TOPIC_HEADING = "heading";
-export const TOPIC_PATH = "path";
-
-interface TVehicleData extends TVehiclePosition, Pick<TVehicle, "speed"> {
-  autoPilot: boolean;
-  heading: number;
-  waypointIndex: number;
-  waypoints: TVehiclePosition[];
-}
-
-type TMessageOption = "publish" | "subscribe" | "unsubscribe";
-
-interface TMessage {
-  data: object;
-  option: TMessageOption;
-  topic: string;
-}
+import { TopicsTypes, TMessage, TVehicleData } from "./ros.types";
 
 const port = 9090;
 const server = createServer({
@@ -123,7 +105,7 @@ const sendMessage = (ws: WebSocket, message: TMessage): void => {
 };
 
 const publishGps = (ws: WebSocket): void => {
-  if (!subscriptions.has(TOPIC_GPS)) return;
+  if (!subscriptions.has(TopicsTypes.GPS)) return;
 
   sendMessage(ws, {
     data: {
@@ -134,17 +116,17 @@ const publishGps = (ws: WebSocket): void => {
       status: { satellitesUsed: 8, satellitesVisible: 20 },
     },
     option: "publish",
-    topic: TOPIC_GPS,
+    topic: TopicsTypes.GPS,
   });
 };
 
 const publishHeading = (ws: WebSocket): void => {
-  if (!subscriptions.has(TOPIC_HEADING)) return;
+  if (!subscriptions.has(TopicsTypes.HEADING)) return;
 
   sendMessage(ws, {
     data: { heading: vehicleData.heading },
     option: "publish",
-    topic: TOPIC_HEADING,
+    topic: TopicsTypes.HEADING,
   });
 };
 
@@ -164,8 +146,8 @@ wss.on("connection", (ws) => {
       case "subscribe":
         subscriptions.add(message.topic);
         console.info("subscribe:", message.topic);
-        if (message.topic === TOPIC_GPS) publishGps(ws);
-        if (message.topic === TOPIC_HEADING) publishHeading(ws);
+        if (message.topic === TopicsTypes.GPS) publishGps(ws);
+        if (message.topic === TopicsTypes.HEADING) publishHeading(ws);
         break;
 
       case "unsubscribe":
@@ -173,25 +155,17 @@ wss.on("connection", (ws) => {
         break;
 
       case "publish":
-        if (message.topic === TOPIC_CONTROL) {
-          // const speed = message.msg?.longitudinal?.speed ?? 0;
-          // const steer = message.msg?.lateral?.steeringTireAngle ?? 0;
+        if (message.topic === TopicsTypes.CONTROL) {
+          const speed = message.msg?.longitudinal?.speed ?? 0;
+          const steer = message.msg?.lateral?.steeringTireAngle ?? 0;
 
-          // if (speed !== 0 || steer !== 0) vehicleData.autoPilot = false;
-          // manualCmd.speed = speed;
-          // manualCmd.steer = steer;
+          if (speed !== 0 || steer !== 0) vehicleData.autoPilot = false;
+          manualCmd.speed = speed;
+          manualCmd.steer = steer;
           manualCmd.lastSeen = Date.now();
         }
 
-        if (message.topic === TOPIC_PATH) {
-          // const poses: {
-          //   pose: {
-          //     position: {
-          //       x: number;
-          //       y: number;
-          //     };
-          //   };
-          // }[] = message.msg?.poses ?? [];
+        if (message.topic === TopicsTypes.PATH) {
           const poses: {
             pose: {
               position: {
@@ -199,7 +173,7 @@ wss.on("connection", (ws) => {
                 y: number;
               };
             };
-          }[] = [];
+          }[] = message.msg?.poses ?? [];
 
           const mission = poses
             .map<TVehiclePosition>((p) => ({
@@ -286,8 +260,6 @@ wss.on("connection", (ws) => {
     console.info("Client disconnected");
   });
 });
-
-console.log(server);
 
 console.info(`RosBridge is listening on wss://${server.address()?.toString()}:${port}...`);
 console.info("Commands:  a = engage autopilot, s = stop, r = reset to start");
